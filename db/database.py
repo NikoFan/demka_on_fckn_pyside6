@@ -1,4 +1,6 @@
 # Библиотеки
+from math import trunc
+
 import psycopg2
 
 # Классы
@@ -209,7 +211,7 @@ class Database:
                     "mail": row[3],
                     "ur_addr": row[4],
                     "inn": row[5],
-                    "rate": row[6],
+                    "rate": str(row[6]),
                     "director": row[7]
                 }
             else:

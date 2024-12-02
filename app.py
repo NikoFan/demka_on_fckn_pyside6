@@ -98,7 +98,6 @@ class Application(QWidget):
         if partner_name:
             Partner.set_name(partner_name)
 
-
         # Вызов функции для открытия окна
         self.show_frames(frame)
 
@@ -107,13 +106,15 @@ class Application(QWidget):
 # Стили для окон
 Style_sheet = '''
 #MainWindowWidget {
-    
     background: #FFFFFF;
-    
 }
 
 #PartnerCardScrollArea {
     background-color: #F4E8D3;
+}
+
+QMessageBox {
+    background: #FFFFFF;
 }
 
 QVBoxLayout {
@@ -135,7 +136,6 @@ QLabel {
     font-size: 25px;
     font-weight: bold;
     qproperty-alignment: AlignCenter;
-    
 }
 
 /* Установка стиля для полей ввода */

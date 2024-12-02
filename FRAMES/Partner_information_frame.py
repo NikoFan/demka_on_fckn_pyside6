@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 from pandas import wide_to_long
 
 from Partner import Partner
-from FRAMES import MainWindow_frame, History_frame
+from FRAMES import MainWindow_frame, History_frame, Update_partner_frame
 from app import Application
 
 class PartnerInformationFrame(QFrame):
@@ -44,7 +44,7 @@ class PartnerInformationFrame(QFrame):
                                          objectName="partner_information_data"))
 
         self.widgets_container.addWidget(QLabel(f"Телефон партнера:"))
-        self.widgets_container.addWidget(QLabel(f"{partner_data['phone'].strip()}",
+        self.widgets_container.addWidget(QLabel(f"+7 {partner_data['phone'].strip()}",
                                          objectName="partner_information_data"))
 
         self.widgets_container.addWidget(QLabel(f"Тип партнера:"))
@@ -71,6 +71,12 @@ class PartnerInformationFrame(QFrame):
         self.widgets_container.addWidget(QLabel(f"{partner_data['director'].strip()}",
                                          objectName="partner_information_data"))
 
+        # Добавление кнопки "История"
+        self.update_partner = QPushButton("Обновить")
+        self.widgets_container.addWidget(self.update_partner)
+        self.update_partner.clicked.connect(
+            lambda: self.controller.open_partner_frame(Update_partner_frame.PartnerUpdateFrame, Partner.get_name())
+        )
 
         # Добавление кнопки "История"
         self.history_btn = QPushButton("История продаж партнера")
