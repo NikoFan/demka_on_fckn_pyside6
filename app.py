@@ -1,6 +1,7 @@
 # Импорт библиотек
 import sys
 from PySide6 import QtCore
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, Slot, QSize, QRect
 from PySide6.QtWidgets import (
     QStackedWidget,
@@ -26,14 +27,16 @@ class Application(QWidget):
         QWidget.__init__(self)
         # Настройка окна
         self.setWindowTitle("Мастер пол")
-        self.setFixedSize(QSize(800, 600))
-        self.setMaximumSize(self.width(), self.height())
-
+        self.resize(QSize(800, 800))
+        self.setMaximumSize(QSize(800, 800))
         self.setObjectName("MainWindowWidget")
 
+        # Установка иконки приложения
+        icon = QIcon()
+        icon.addPixmap(QPixmap(u"res/app_icon_png.png"))
+        self.setWindowIcon(icon)
 
-
-
+        # Инициализация бд
         self.db = Database()
 
         # Инициализация фреймов
@@ -140,7 +143,7 @@ QLabel {
 
 /* Установка стиля для полей ввода */
 QLineEdit {
-    height: 20px;
+    height: 40px;
     color: #000000;
     background: #FFFFFF
 }
