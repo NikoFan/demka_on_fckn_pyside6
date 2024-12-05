@@ -193,6 +193,6 @@ class PartnerUpdateFrame(QFrame):
     def back_to_later_window(self):
         ''' Открытие прошлого окна '''
 
-        self.controller.open_partner_frame(Partner_information_frame.PartnerInformationFrame, Partner.get_name())
+        self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, Partner.get_name())
 
 

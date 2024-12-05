@@ -75,13 +75,13 @@ class PartnerInformationFrame(QFrame):
         self.update_partner = QPushButton("Обновить")
         self.widgets_container.addWidget(self.update_partner)
         self.update_partner.clicked.connect(
-            lambda: self.controller.open_partner_frame(Update_partner_frame.PartnerUpdateFrame, Partner.get_name())
+            lambda: self.controller.show_arg_frame(Update_partner_frame.PartnerUpdateFrame, Partner.get_name())
         )
 
         # Добавление кнопки "История"
         self.history_btn = QPushButton("История продаж партнера")
         self.history_btn.clicked.connect(
-            lambda : self.controller.open_partner_frame(History_frame.HistoryFrame, Partner.get_name())
+            lambda : self.controller.show_arg_frame(History_frame.HistoryFrame, Partner.get_name())
         )
 
         self.widgets_container.addWidget(self.history_btn)
@@ -89,7 +89,7 @@ class PartnerInformationFrame(QFrame):
         # Добавление кнопки "Обратно"
         self.on_main_btn = QPushButton("На главную")
         self.on_main_btn.clicked.connect(
-            lambda: self.controller.open_partner_frame(MainWindow_frame.MainWindow, Partner.get_name())
+            lambda: self.controller.show_arg_frame(MainWindow_frame.MainWindow, Partner.get_name())
         )
         self.widgets_container.addWidget(self.on_main_btn)
 

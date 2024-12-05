@@ -69,9 +69,9 @@ class HistoryFrame(QFrame):
 
 
     def restore_frame(self):
-        self.controller.open_partner_frame(HistoryFrame, self.partner_name)
+        self.controller.show_arg_frame(HistoryFrame, self.partner_name)
 
     def open_partner_info_frame(self):
-        self.controller.open_partner_frame(Partner_information_frame.PartnerInformationFrame, self.partner_name)
+        self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, self.partner_name)
 
 

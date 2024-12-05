@@ -25,84 +25,130 @@ class Application(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        # Настройка окна
+        """ Настройка параметров приложения """
+        # Установка названия окна
         self.setWindowTitle("Мастер пол")
+
+        # Установка стартовых значений Ширина / Высота
         self.resize(QSize(800, 800))
+
+        # Установка максимальных значений для расширения
+        # Не дает объектам в окне самим его масштабировать и сохранит возможность уменьшать окно пользователю
         self.setMaximumSize(QSize(800, 800))
+
+        # Установка объектного имени окна
+        # Имя используется при установке стилей
         self.setObjectName("MainWindowWidget")
 
-        # Установка иконки приложения
+        """ Установки иконки для приложения """
+        # Инициализация переменной для хранения иконки
         icon = QIcon()
+
+        # Загрузка иконки из каталога с изображениями
         icon.addPixmap(QPixmap(u"res/app_icon_png.png"))
+
+        # Установка иконки
         self.setWindowIcon(icon)
 
-        # Инициализация бд
+        """ Инициализация переменных """
+        # Инициализация базы данных
+        # В дальнейшем пользователь будет взаимодействовать с ней через controller.db
         self.db = Database()
 
-        # Инициализация фреймов
+        # Инициализация стартового фрейма
         ''' 
         Мы вызываем фреймы передавая в аргументы parent / controller значения self / self
+        Под значение self используется класс Application(), из которого будут браться переменные
+        такие как db, или его функции (show_frame() и т.д)
         Это позволяет работать с Стартовым классом Application
         не создавая его объект его каждый раз заново
         '''
-
         self.main_window = MainWindow_frame.MainWindow(self, self)
-        # self.partner_add_window = Partner_frame.PartnerAddFrame(self, self)
 
 
         # Создание контейнера для Фреймов
         '''
-        Доступ к фреймам происходит по индексу
-        Для открытия окна необходимо прописать команду .setCurrentIndex(frame_index)
-        Фрейм, который добавляется 1м (в данном случае main_window) - открывается при запуске программы
+        Доступ к фреймам происходит по имени класса
+        Для открытия окна необходимо прописать команду .setCurrentWidget(current_frame)
+        Стартовый фрейм (в данном случае main_window) - открывается при запуске программы
         '''
         self.frames_container = QStackedWidget()
 
 
-        # Добавление фреймов в контейнер
+        # Добавление стартового фрейма в контейнер
         self.frames_container.addWidget(self.main_window)
-        # self.frames_container.addWidget(self.partner_add_window)
 
-        # Добавлен Фреймов на окно
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.frames_container)
+        """ Добавлений фрейма в приложение """
+        # Создание макета для расположения фреймов из контейнера
+        frames_container_layout = QVBoxLayout(self)
+
+        # Добавление контейнера в планировщик
+        frames_container_layout.addWidget(self.frames_container)
+
+
+    # @Slot()
+    # def show_frames(self, frame):
+    #     ''' Переключение фрейма по Имени фрейма '''
+    #     # Обновление информации на фрейме
+    #     current_frame = frame(self, self)
+    #     print("partner name __:", Partner.get_name())
+    #     # Вызов функции для обновлений данных на фрейме
+    #     current_frame.update_start_values()
+    #
+    #
+    #     # Добавление обновленного фрейма в контейнер
+    #     self.frames_container.addWidget(current_frame)
+    #
+    #     # Вызов обновленного фрейма
+    #     self.frames_container.setCurrentWidget(current_frame)
 
 
     @Slot()
-    def show_frames(self, frame):
-        ''' Переключение фрейма по Имени фрейма '''
-        # Обновление информации на фрейме
+    def show_arg_frame(self, frame, partner_name: str = Partner.get_name()):
+        """ Открытие фрейма по нажатию кнопки + установка имени обрабатываемого партнера """
+
         current_frame = frame(self, self)
-        print("partner name __:", Partner.get_name())
-        # Вызов функции для обновлений данных на фрейме
-        current_frame.update_start_values()
-
-
-        # Добавление обновленного фрейма в контейнер
-        self.frames_container.addWidget(current_frame)
-
-        # Вызов обновленного фрейма
-        self.frames_container.setCurrentWidget(current_frame)
-
-
-    @Slot()
-    def open_partner_frame(self, frame, partner_name: str = None):
-        ''' Установка имени обрабатываемого пользователя перед открытием окна '''
-        # Удаление окна партнера
+        # Удаление старого окна из контейнера фреймов
         '''
         В данной функции обрабатываются только те фреймы, где требуется Самая новая информация
         Если до этого фрейм был в списке (=> он был уже загружен со старой информацией) -> 
             то его надо удалить и пересоздать
         При вызове метода передается требуемый метод - он удаляется и пересоздается
         '''
-        self.frames_container.removeWidget(frame(self, self))
+        self.frames_container.removeWidget(current_frame)
+
         # Запись нового имени
-        print("partner_name", partner_name)
+        print("partner name __:", partner_name)
+
+        """ Установка имени обрабатываемого партнера в Статический Класс """
+        # Проверка, что имя не пустышка
         if partner_name:
+            # Установка имени
             Partner.set_name(partner_name)
 
         # Вызов функции для открытия окна
-        self.show_frames(frame)
+        """ Было принято решение не писать эту функцию, а ее функционал перенести в 1
+        Это позволяет сократить объем кода
+        Для предотвращения ошибок, в случае если при вызове не передается Новое имя партнера
+        В аргументах стоит стартовое значение, которе будет использоваться в случае
+        отсутствия имени в передаваемых параметрах
+        """
+        # self.show_frames(frame)
+
+
+        # Вызов функции для обновлений данных на фрейме
+        """
+        В каждом фрейме создана такая функция.
+        Это позволит избежать конфликта, когда функция вызывается, а в фрейме ее нет
+        """
+        current_frame.update_start_values()
+
+        # Добавление обновленного фрейма в контейнер
+        self.frames_container.addWidget(current_frame)
+
+        # Вызов обновленного фрейма
+        """ Функция отображает выбранные фрейм """
+        self.frames_container.setCurrentWidget(current_frame)
 
 
 

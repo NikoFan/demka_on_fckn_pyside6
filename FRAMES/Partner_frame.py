@@ -190,6 +190,7 @@ class PartnerAddFrame(QFrame):
     def back_to_later_window(self):
         ''' Открытие прошлого окна '''
 
-        self.controller.show_frames(MainWindow_frame.MainWindow)
+        # self.controller.show_frames(MainWindow_frame.MainWindow)
+        self.controller.show_arg_frame(MainWindow_frame.MainWindow)
 
 
