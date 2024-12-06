@@ -1,42 +1,52 @@
 # Импорт библиотек
-import sys
-
-from PySide6.QtCore import Qt, Slot, QSize, QRect
 from PySide6.QtWidgets import (
     QFrame,
-    QWidget,
     QPushButton,
     QLabel,
-    QTextEdit,
-    QFormLayout,
     QVBoxLayout,
     QLineEdit)
 
-from Partner import Partner
-from FRAMES import MainWindow_frame, Partner_information_frame
-from app import Application
+# Импорт классов
+from FRAMES import Partner_information_frame
 from send_message_box import send_discard_message_box, send_information_message_box
 from check_input_info import *
 
 
 class PartnerUpdateFrame(QFrame):
-    ''' Класс добавления партнера '''
+    """ Класс обновления партнера в Базе данных. Действия:
+    - Обновление партнера : self.update_partner_information
+    - Возврат на окно информации о партнере : self.back_to_later_window
+
+    Класс добавления нового партнера 1 в 1, как и этот.
+    там различается только 2 момента:
+    1. В строках для ввода нет текста, только подсказки
+    2. После нажатия на кнопку срабатывает другой скрипт БД
+    """
 
     def __init__(self, parent, controller):
-
         QFrame.__init__(self, parent)
+
+        # Инициализация переменных
+        """ Все переменные берутся из Главного класса (Application()) 
+        Они приходят вместе с controller, который передается как self при переходе в окно """
         self.controller = controller
         self.db = controller.db
 
+        # Создание контейнера для Элементов окна
         self.container = QVBoxLayout()
 
+        # Обновление окна до актуальных данных
         self.update_start_values()
+
+        # Выгрузка контейнера с содержимым на фрейм
         self.setLayout(self.container)
 
+    # Очистка старого контейнера
     def clear_layout(self):
-        ''' Очистка контейнера с виджетами, чтобы он не хранил в себе старые виджеты'''
+        """ Очистка контейнера с элементами (QLineEdit, QPushButton и т.д.),
+        чтобы он не хранил в себе старые виджеты """
 
-        # Очистка
+        # Очистка контейнера от старых элементов
         """
         Проблема вся в том, что если создавать QVBoxLayout() в функции обновления -
         строки для ввода не будут передавать новый текст
@@ -46,14 +56,20 @@ class PartnerUpdateFrame(QFrame):
         Для этого контейнер чистится перед запуском файла
         """
         for i in reversed(range(self.container.count())):
-            widget = self.container.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()  # Удаляем
 
+            # Считывается виджет из контейнера по ID
+            widget = self.container.itemAt(i).widget()
+
+            # Проверка, что виджет не пустой
+            if widget is not None:
+                # Удаление виджета
+                widget.deleteLater()
+
+    # Обновление информации на фрейме
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
-        # Очистка контейнера от старых данных
+        # Очистка контейнера от старых элементов
         self.clear_layout()
 
         # Получение стартовых данных о партнере
@@ -62,18 +78,19 @@ class PartnerUpdateFrame(QFrame):
         """
         self.partner_late_info = self.db.get_partner_by_name(Partner.get_name())
 
+        # Создание заголовка окна
         self.title_add_window_name = QLabel(self)
         self.title_add_window_name.setText("Добавить партнера")
+
+        # Установка имени объекта, к которому уже есть стиль Заголовка
         self.title_add_window_name.setObjectName("Title")
+
+        # Добавление заголовка в контейнер
         self.container.addWidget(self.title_add_window_name)
 
-        '''
-        Каждый объект создается по паттерну, где прописываются его координаты и параметры
-        Так ка из Layout нельзя получить текст в полях - приходится их размещать вручную
 
-        В паттер передается сообщение и координаты Х и У
-        '''
-        # Добавление объектов на Фрейм
+        # Создание строк для ввода
+        """ Строки создаются по единому стандарту в функции self.create_pattern_Qline_edit() """
         self.create_text_enter_hint("Имя партнера")
         self.partner_name_entry = self.create_pattern_Qline_edit(self.partner_late_info['name'].strip())
 
@@ -82,7 +99,11 @@ class PartnerUpdateFrame(QFrame):
 
         self.create_text_enter_hint("Телефон партнера (формат +7 9хх ххх хх хх)")
         self.partner_phone_entry = self.create_pattern_Qline_edit(self.partner_late_info['phone'].strip())
+
+        # Установка максимальной длины (не знаю почему, но с 12 работает некорректно)
         self.partner_phone_entry.setMaxLength(13)
+
+        # Установка маски для ввода
         self.partner_phone_entry.setInputMask("+7 000 000 00 00")
 
         self.create_text_enter_hint("Электронная почта партнера")
@@ -126,13 +147,11 @@ class PartnerUpdateFrame(QFrame):
         """
         Используется метод аналогичный с QLineEdit
         """
-        # hint.setGeometry(20, (40 * index) + (index * 10)  , 600, 20)
         hint.setObjectName("text_enter_hint")
         self.container.addWidget(hint)
-        return hint
 
     def update_partner_information(self):
-        ''' Метод добавления нового партнера в базу данных '''
+        ''' Метод обновления информации о партнере в БД '''
 
         partner_dict_data: dict = {
             "type": self.partner_type_entry.text(),
@@ -171,18 +190,6 @@ class PartnerUpdateFrame(QFrame):
         чтобы создаваемый объект автоматически помещался на Используемый Фрейм
         """
         entry = QLineEdit(self)
-
-        # Установка координат и размеров
-        """
-        В силу того, что объект помещается не в layout, а на голый фрейм,
-        он помещается в стартовую позицию (Верхний левый угол), откуда его следует переместить в нужную
-        Для этого передается индекс (index), который применяется в формуле расчета У координаты
-        С учетом того что высота каждой строки 20 рх, следует просто учитывать их, при разделении
-        Поля для ввода и Текста подсказки
-
-        (Устарело)
-        """
-        # entry.setGeometry(10, 20 + (index * 10) + (40 * index), 750, 20)
 
         # Установка исчезающего текста
         entry.setText(late_message)

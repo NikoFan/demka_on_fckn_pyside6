@@ -62,12 +62,7 @@ class PartnerAddFrame(QFrame):
         self.title_add_window_name.setObjectName("Title")
         self.container.addWidget(self.title_add_window_name)
 
-        '''
-        Каждый объект создается по паттерну, где прописываются его координаты и параметры
-        Так ка из Layout нельзя получить текст в полях - приходится их размещать вручную
-        
-        В паттер передается сообщение и координаты Х и У
-        '''
+
         # Добавление объектов на Фрейм
         self.create_text_enter_hint("Имя партнера")
         self.partner_name_entry = self.create_pattern_Qline_edit("Введите имя партнера")
@@ -112,22 +107,12 @@ class PartnerAddFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
-        # return self.widgets_layout_container
-
-
     def create_text_enter_hint(self, hint_message: str):
         ''' Создание подсказки для ввода текста '''
         hint = QLabel(self)
         hint.setText(hint_message)
-
-        # Размещение строки подсказки на фрейме
-        """
-        Используется метод аналогичный с QLineEdit
-        """
-        # hint.setGeometry(20, (40 * index) + (index * 10)  , 600, 20)
         hint.setObjectName("text_enter_hint")
         self.container.addWidget(hint)
-        return hint
 
 
 
@@ -167,18 +152,6 @@ class PartnerAddFrame(QFrame):
         чтобы создаваемый объект автоматически помещался на Используемый Фрейм
         """
         entry = QLineEdit(self)
-
-        # Установка координат и размеров
-        """
-        В силу того, что объект помещается не в layout, а на голый фрейм,
-        он помещается в стартовую позицию (Верхний левый угол), откуда его следует переместить в нужную
-        Для этого передается индекс (index), который применяется в формуле расчета У координаты
-        С учетом того что высота каждой строки 20 рх, следует просто учитывать их, при разделении
-        Поля для ввода и Текста подсказки
-        
-        (Устарело)
-        """
-        # entry.setGeometry(10, 20 + (index * 10) + (40 * index), 750, 20)
 
         # Установка исчезающего текста
         entry.setPlaceholderText(placeholder_message)

@@ -215,7 +215,7 @@ QPushButton {
 }
 
 /* Установка Телесного цвета для текста карточек партнера */
-#Partner_name, #Partner_phone, #partner_information_data{
+#Partner_name, #Partner_phone, #partner_information_data, #text_enter_hint{
     background: #F4E8D3;
     color: #000000;
     padding: 0px 0px 0px 10px;

@@ -1,11 +1,7 @@
 # Импорт библиотек
-import sys
-from linecache import updatecache
-
-from PySide6.QtCore import Qt, Slot, QSize, QRect
+from PySide6.QtCore import Slot
 from PySide6.QtWidgets import (
-    QStackedWidget,
-    QApplication,
+
     QVBoxLayout,
     QFrame,
     QWidget,
@@ -13,10 +9,9 @@ from PySide6.QtWidgets import (
     QLabel,
     QScrollArea)
 
-# Class
+# Импорт классов
 from FRAMES import  Partner_frame, Partner_information_frame
 from Partner import Partner
-from db.database import Database
 
 
 class MainWindow(QFrame):
