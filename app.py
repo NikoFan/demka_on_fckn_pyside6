@@ -1,23 +1,17 @@
 # Импорт библиотек
 import sys
-from PySide6 import QtCore
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtCore import Qt, Slot, QSize, QRect
+from PySide6.QtCore import Slot, QSize
 from PySide6.QtWidgets import (
     QStackedWidget,
     QApplication,
     QVBoxLayout,
-    QMainWindow,
-    QWidget,
-    QPushButton,
-    QLabel,
-    QScrollArea)
+    QWidget)
 
 # Class
-from FRAMES import MainWindow_frame, Partner_frame
+from FRAMES import MainWindow_frame
 from db.database import Database
-
-
+from send_message_box import *
 from Partner import Partner
 
 class Application(QWidget):
@@ -149,6 +143,15 @@ class Application(QWidget):
         # Вызов обновленного фрейма
         """ Функция отображает выбранные фрейм """
         self.frames_container.setCurrentWidget(current_frame)
+
+
+    # Обработка закрытия окна
+    def closeEvent(self, event):
+        # Пользователь отвечает на сообщение ДА - 16000 НЕТ - 66000 (это код кнопки)
+        if send_information_message_box("Выйти из приложения?") < 17000:
+            event.accept()
+        else:
+            event.ignore()
 
 
 
