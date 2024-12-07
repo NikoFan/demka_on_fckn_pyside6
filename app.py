@@ -173,12 +173,6 @@ QLabel {
     color: #000000;
     font-size: 16px;
 }
-
-/* Сделать белой подложку в области прокрутки*/
-#scroll_area_widgets_container {
-    background: #FFFFFF;
-}
-
 /* Установка цвета для всех заголовков */
 #Title {
     color: #000000;
@@ -186,6 +180,12 @@ QLabel {
     font-weight: bold;
     qproperty-alignment: AlignCenter;
 }
+
+/* Сделать белой подложку в области прокрутки*/
+#scroll_area_widgets_container {
+    background: #FFFFFF;
+}
+
 
 /* Установка стиля для полей ввода */
 QLineEdit {

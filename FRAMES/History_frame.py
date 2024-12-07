@@ -29,7 +29,6 @@ class HistoryFrame(QFrame):
     def update_start_values(self):
         ''' Обновление стартовых данных о партнере '''
 
-
         '''
         Была решена проблема с немасштабируемой таблицей
         для этого достаточно убрать QWidget(self) из скобок в QVBoxLayout()
