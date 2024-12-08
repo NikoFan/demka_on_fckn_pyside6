@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QScrollArea)
 
 # Импорт классов
-from FRAMES import  Partner_frame, Partner_information_frame
+from FRAMES import  Partner_frame, Partner_information_frame, USELESS_FRAME_TO_SHOW_INSTRUMENTS
 from Partner import Partner
 
 
@@ -78,14 +78,27 @@ class MainWindow(QFrame):
         # Установка объектного имени (можно удалить)
         self.add_partner_btn.setObjectName("Add")
 
+
         # Установка действий при нажатии
         self.add_partner_btn.clicked.connect(self.open_partner_add_frame)
+
+        # Добавление кнопки "Добавить"
+        self.useless_frame = QPushButton(self)
+
+        # Установка текста кнопки
+        self.useless_frame.setText("open_useless_frame")
+
+        # Установка объектного имени (можно удалить)
+        self.useless_frame.clicked.connect(
+            lambda : self.controller.show_arg_frame(USELESS_FRAME_TO_SHOW_INSTRUMENTS.UselessFrame)
+        )
 
         # Добавление области прокрутки в контейнер виджетов
         self.widgets_layout_container.addWidget(self.scrollArea)
 
         # Добавление кнопки Добавить в контейнер виджетов
         self.widgets_layout_container.addWidget(self.add_partner_btn)
+        self.widgets_layout_container.addWidget(self.useless_frame)
 
         # Добавление контейнера виджетов на фрейм
         self.setLayout(self.widgets_layout_container)

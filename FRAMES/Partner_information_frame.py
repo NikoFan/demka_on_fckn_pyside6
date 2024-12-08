@@ -26,7 +26,7 @@ class PartnerInformationFrame(QFrame):
 
 
         # self.setLayout(self.update_start_values())
-        self.update_start_values()
+        # self.update_start_values()
 
     def update_start_values(self):
         ''' Обновление стартовых данных о партнере '''

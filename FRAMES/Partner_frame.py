@@ -31,31 +31,31 @@ class PartnerAddFrame(QFrame):
 
         self.container = QVBoxLayout()
 
-        self.update_start_values()
+        # self.update_start_values()
         self.setLayout(self.container)
 
-    def clear_layout(self):
-        ''' Очистка контейнера с виджетами, чтобы он не хранил в себе старые виджеты'''
-
-        # Очистка
-        """
-        Проблема вся в том, что если создавать QVBoxLayout() в функции обновления -
-        строки для ввода не будут передавать новый текст
-        
-        Для этого надо создавать его в __init__() функции
-        НО если не очистить его, то каждое упоминание класса будет создавать строки и хранить их в Контекнере
-        Для этого контейнер чистится перед запуском файла
-        """
-        for i in reversed(range(self.container.count())):
-            widget = self.container.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()  # Удаляем
+    # def clear_layout(self):
+    #     ''' Очистка контейнера с виджетами, чтобы он не хранил в себе старые виджеты'''
+    #
+    #     # Очистка
+    #     """
+    #     Проблема вся в том, что если создавать QVBoxLayout() в функции обновления -
+    #     строки для ввода не будут передавать новый текст
+    #
+    #     Для этого надо создавать его в __init__() функции
+    #     НО если не очистить его, то каждое упоминание класса будет создавать строки и хранить их в Контекнере
+    #     Для этого контейнер чистится перед запуском файла
+    #     """
+    #     for i in reversed(range(self.container.count())):
+    #         widget = self.container.itemAt(i).widget()
+    #         if widget is not None:
+    #             widget.deleteLater()  # Удаляем
 
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
         # Очистка контейнера от старых данных
-        self.clear_layout()
+        # self.clear_layout()
 
         self.title_add_window_name = QLabel(self)
         self.title_add_window_name.setText("Добавить партнера")
