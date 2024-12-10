@@ -7,6 +7,7 @@ def send_information_message_box(message_text: str):
     msgBox.setWindowTitle("Мастер Пол Поддержка")
     msgBox.setText("\t\t"+message_text+"\t\t\t\t")
     msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+    msgBox.setDefaultButton(QMessageBox.StandardButton.Yes)
     msgBox.setIcon(QMessageBox.Icon.Information)
     result = msgBox.exec()
     print(result)
@@ -18,5 +19,7 @@ def send_discard_message_box(message_text: str):
     msgBox.setWindowTitle("Мастер Пол Поддержка")
     msgBox.setText("\t\t"+message_text+"\t\t\t\t")
     msgBox.setIcon(QMessageBox.Icon.Critical)
+    msgBox.setStandardButtons(QMessageBox.StandardButton.Yes)
+    msgBox.setDefaultButton(QMessageBox.StandardButton.Yes)
     result = msgBox.exec()
     return result

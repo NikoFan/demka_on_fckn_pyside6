@@ -1,4 +1,8 @@
 import pandas as pd
+import openpyxl
+import psycopg2 as pg
+
+from config import *
 
 # Классы
 from database import Database
@@ -9,24 +13,31 @@ from database import Database
 Поэтому при заполнении таблиц используется разное наименование
 '''
 
+
+# Верный код добавления - остальные пока не работают
 def Partners_import(table_name: str):
     ''' Заполнение '''
-    print("excel_files/" + table_name + ".xlsx")
-    df = pd.read_excel("./excel_files/" + table_name + ".xlsx", engine='openpyxl')
+    print("excel/" + table_name + ".xlsx")
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/Partners_import.xlsx", engine='openpyxl')
+    print(df)
     query = """INSERT INTO partners VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-    # cursor = Database.cursor()
-    for r in df.itertuples():
-        print("-------")
-        print(r)
-        print(r._1)
-        partner_type = r._1
-        partner_name = r._2
-        partner_director = r.Директор
-        partner_mail = r._4
-        partner_phone = r._5
-        partner_ur_addr = r._6
-        partner_INN = r.ИНН
-        partner_rate = r.Рейтинг
+    database = pg.connect(database=db_name,
+                          user=user,
+                          password=password,
+                          host=host,
+                          port=port)
+    cursor = database.cursor()
+    for stroka in df.itertuples():
+        print(stroka)
+        print(stroka._1)
+        partner_type = stroka._1
+        partner_name = stroka._2
+        partner_director = stroka.Директор
+        partner_mail = stroka._4
+        partner_phone = stroka._5
+        partner_ur_addr = stroka._6
+        partner_INN = stroka.ИНН
+        partner_rate = stroka.Рейтинг
 
         values = (partner_type,
                   partner_name,
@@ -37,10 +48,11 @@ def Partners_import(table_name: str):
                   partner_INN,
                   partner_rate)
 
-        # cursor.execute(query, values)
+        cursor.execute(query, values)
 
-    # cursor.close()
-    # .commit
+    cursor.close()
+
+    database.commit()
 
 def Product_type_import(table_name: str):
     ''' Заполнение '''
