@@ -35,43 +35,17 @@ class PartnerUpdateFrame(QFrame):
         # Создание контейнера для Элементов окна
         self.container = QVBoxLayout()
 
-        # Обновление окна до актуальных данных
-        # self.update_start_values()
+
 
         # Выгрузка контейнера с содержимым на фрейм
         self.setLayout(self.container)
 
-    # Очистка старого контейнера
-    # def clear_layout(self):
-    #     """ Очистка контейнера с элементами (QLineEdit, QPushButton и т.д.),
-    #     чтобы он не хранил в себе старые виджеты """
-    #
-    #     # Очистка контейнера от старых элементов
-    #     """
-    #     Проблема вся в том, что если создавать QVBoxLayout() в функции обновления -
-    #     строки для ввода не будут передавать новый текст
-    #
-    #     Для этого надо создавать его в __init__() функции
-    #     НО если не очистить его, то каждое упоминание класса будет создавать строки и хранить их в Контекнере
-    #     Для этого контейнер чистится перед запуском файла
-    #     """
-    #     for i in reversed(range(self.container.count())):
-    #
-    #         # Считывается виджет из контейнера по ID
-    #         widget = self.container.itemAt(i).widget()
-    #
-    #         # Проверка, что виджет не пустой
-    #         if widget is not None:
-    #             # Удаление виджета
-    #             widget.deleteLater()
+
 
     # Обновление информации на фрейме
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
-        # Очистка контейнера от старых элементов
-        # self.clear_layout()
-
         # Получение стартовых данных о партнере
         """
         Полученные данные будут установлены в качестве стартовых в поля для ввода
@@ -135,22 +109,19 @@ class PartnerUpdateFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
-        # return self.widgets_layout_container
 
+    # Установка текста подсказки над полем для ввода
     def create_text_enter_hint(self, hint_message: str):
         ''' Создание подсказки для ввода текста '''
-        hint = QLabel(self)
-        hint.setText(hint_message)
-
-        # Размещение строки подсказки на фрейме
-        """
-        Используется метод аналогичный с QLineEdit
-        """
+        hint = QLabel(hint_message)
         hint.setObjectName("text_enter_hint")
         self.container.addWidget(hint)
 
+    # Обработчик нажатий на кнопку "Обновить"
     def update_partner_information(self, messageStart: bool = True):
-        ''' Метод обновления информации о партнере в БД '''
+        ''' Метод обновления информации о партнере в БД
+        messageStart - Нужна для тестирования. При передачи в нее значения False - Она запрещает
+        вызывать MessageBox, и это позволяет закончить тестирование '''
 
         partner_dict_data: dict = {
             "type": self.partner_type_entry.text(),
@@ -181,10 +152,10 @@ class PartnerUpdateFrame(QFrame):
                 send_discard_message_box("Ошибка")
         except Exception:
             print("error")
-            # UserMessageBox().send_discard_message_box("Ошибка")
             if messageStart:
                 send_discard_message_box("Ошибка")
 
+    # Функция создания поля для ввода текста
     def create_pattern_Qline_edit(self, late_message: str):
         ''' Создание шаблона для ввода текста '''
 
@@ -195,13 +166,13 @@ class PartnerUpdateFrame(QFrame):
         """
         entry = QLineEdit(self)
 
-        # Установка исчезающего текста
+        # Установка текста, который предстоит менять
         entry.setText(late_message)
         self.container.addWidget(entry)
 
         return entry
 
+    # Функция возврата на прошлое окно
     def back_to_later_window(self):
         ''' Открытие прошлого окна '''
-
         self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, Partner.get_name())

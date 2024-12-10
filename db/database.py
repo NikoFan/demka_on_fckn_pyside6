@@ -5,10 +5,10 @@ import psycopg2
 
 # Классы
 from Partner import Partner
-from .config import host, user, password, db_name
+from .config import *
 
 # Файл проверки информации
-from check_input_info import route
+from check_input_info import *
 
 '''
 -> Класс Database используется для работы с БД

@@ -149,10 +149,9 @@ class Application(QWidget):
     # Обработка закрытия окна
     def closeEvent(self, event, param=False):
         # Пользователь отвечает на сообщение ДА - 16000 НЕТ - 66000 (это код кнопки)
-        print(event)
-        if param:
+        if param: # Используется при тестировании
             exit()
-        if UserMessageBox().send_information_message_box("Выйти из приложения?") < 17000:
+        if send_information_message_box("Выйти из приложения?") < 17000:
             event.accept()
         else:
             event.ignore()
@@ -237,6 +236,7 @@ if __name__ == "__main__":
 
     # Инициализация приложения
     main_window = Application()
+    main_window.setWindowIcon(QIcon("./res/icon.ico"))
 
     # Демонстрация главного окна
     main_window.show()

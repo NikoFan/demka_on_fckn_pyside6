@@ -1,8 +1,6 @@
-from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtCore import Slot, QSize
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QFrame,
-    QStackedWidget,
     QPushButton,
     QLabel,
     QComboBox,
@@ -10,8 +8,11 @@ from PySide6.QtWidgets import (
     QWidget)
 
 from FRAMES import MainWindow_frame
-from app import Application
 
+
+
+""" Класс для демонстрации тех инструментов, которые мы не затронули
+НО они могут быть на самом экзамене """
 
 class UselessFrame(QFrame):
     def __init__(self, parent, controller):
@@ -19,7 +20,6 @@ class UselessFrame(QFrame):
         self.controller = controller
         self.widgets_container = QVBoxLayout(QWidget(self))
 
-        # self.update_start_values()
 
 
 
@@ -71,3 +71,28 @@ class UselessFrame(QFrame):
         self.picture_socket.setPixmap(self.pixmap_picture)
         return self.picture_socket
 
+
+
+    # Очистка старого контейнера
+    # def clear_layout(self):
+    #     """ Очистка контейнера с элементами (QLineEdit, QPushButton и т.д.),
+    #     чтобы он не хранил в себе старые виджеты """
+    #
+    #     # Очистка контейнера от старых элементов
+    #     """
+    #     Проблема вся в том, что если создавать QVBoxLayout() в функции обновления -
+    #     строки для ввода не будут передавать новый текст
+    #
+    #     Для этого надо создавать его в __init__() функции
+    #     НО если не очистить его, то каждое упоминание класса будет создавать строки и хранить их в Контекнере
+    #     Для этого контейнер чистится перед запуском файла
+    #     """
+    #     for i in reversed(range(self.container.count())):
+    #
+    #         # Считывается виджет из контейнера по ID
+    #         widget = self.container.itemAt(i).widget()
+    #
+    #         # Проверка, что виджет не пустой
+    #         if widget is not None:
+    #             # Удаление виджета
+    #             widget.deleteLater()
