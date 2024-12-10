@@ -152,6 +152,5 @@ def insert_table():
 
 
 
-# Вызов файлов
-
+# Вызов работы функции
 insert_table()

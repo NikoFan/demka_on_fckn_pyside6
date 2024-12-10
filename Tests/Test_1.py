@@ -1,4 +1,7 @@
 import sys
+from multiprocessing.pool import CLOSE
+
+import PySide6.QtCore
 from PySide6.QtWidgets import QApplication, QFrame, QMessageBox
 from PySide6.QtTest import QTest
 from PySide6.QtCore import Qt, QTimeZone
@@ -17,14 +20,14 @@ def test_app():
     # Нажимаем кнопку
     # Имитация нажатия на кнопку add_partner_btn в классе MainWindow()
     q = QTest.mouseClick(MainWindow_frame.MainWindow(window, window).add_partner_btn, Qt.LeftButton)
-    add_new_partner(window)
+    add_new_partner(window, app)
 
 
     # QTest.mouseClick(window.buttonRead, Qt.LeftButton)
     # Закрываем окно после теста
-    window.close()
+    window.closeEvent(event=None, param=True)
 
-def add_new_partner(window):
+def add_new_partner(window, app):
     ''' Тестирование функции добавления нового партнера '''
     add_partner_window = Partner_frame.PartnerAddFrame(window, window)
     add_partner_window.update_start_values()
@@ -41,16 +44,18 @@ def add_new_partner(window):
 
     # Имитация нажатия левой кнопки мыши
 
-    QTest.mouseClick(add_partner_window.add, Qt.LeftButton)
-    print("---", Qt.Key.Key_Enter)
-    QTest.keyClick(add_partner_window, 16777221)
+    # QTest.mouseClick(add_partner_window.add, Qt.LeftButton)
+    add_partner_window.add_new_partner(messageStart=False)
+    # app.aboutToQuit.connect(handle_message_box)
+    # QTest.qWait(3000)  # Подождем 100 миллисекунд (можно настроить по необходимости)
+    #
+    # # Пытаемся найти QMessageBox и нажать кнопку Yes
+    # reply = app.activePopupWidget()  # Получаем активное модальное окно
+    # if isinstance(reply, QMessageBox):
+    #     QTest.mouseClick(reply.button(QMessageBox.Yes), Qt.LeftButton)
 
-
-
-def keyPressEvent(event):
-    key = event.key()
-    print("KEY:", key)
-
+def handle_message_box():
+    print(123)
 
 
 if __name__ == "__main__":

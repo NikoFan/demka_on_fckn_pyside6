@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 
 # Импорт классов
 from FRAMES import Partner_information_frame
-from send_message_box import send_discard_message_box, send_information_message_box
+from send_message_box import *
 from check_input_info import *
 
 
@@ -88,7 +88,6 @@ class PartnerUpdateFrame(QFrame):
         # Добавление заголовка в контейнер
         self.container.addWidget(self.title_add_window_name)
 
-
         # Создание строк для ввода
         """ Строки создаются по единому стандарту в функции self.create_pattern_Qline_edit() """
         self.create_text_enter_hint("Имя партнера")
@@ -150,7 +149,7 @@ class PartnerUpdateFrame(QFrame):
         hint.setObjectName("text_enter_hint")
         self.container.addWidget(hint)
 
-    def update_partner_information(self):
+    def update_partner_information(self, messageStart: bool = True):
         ''' Метод обновления информации о партнере в БД '''
 
         partner_dict_data: dict = {
@@ -168,7 +167,8 @@ class PartnerUpdateFrame(QFrame):
 
         try:
             if self.db.update_partners_data(partner_dict_data):
-                send_information_message_box("Обновлено")
+                if messageStart:
+                    send_information_message_box("Обновлен")
 
                 # Обновление имени Активного партнера
                 """
@@ -177,9 +177,13 @@ class PartnerUpdateFrame(QFrame):
                 """
                 Partner.set_name(self.partner_name_entry.text())
                 return
-            send_discard_message_box("Ошибка")
+            if messageStart:
+                send_discard_message_box("Ошибка")
         except Exception:
-            send_discard_message_box("Ошибка")
+            print("error")
+            # UserMessageBox().send_discard_message_box("Ошибка")
+            if messageStart:
+                send_discard_message_box("Ошибка")
 
     def create_pattern_Qline_edit(self, late_message: str):
         ''' Создание шаблона для ввода текста '''
@@ -201,5 +205,3 @@ class PartnerUpdateFrame(QFrame):
         ''' Открытие прошлого окна '''
 
         self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, Partner.get_name())
-
-

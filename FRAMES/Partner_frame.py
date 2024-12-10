@@ -9,14 +9,14 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLabel,
     QTextEdit,
-    QFormLayout,
+    QMessageBox,
     QVBoxLayout,
     QLineEdit)
 
 from Partner import Partner
 from FRAMES import MainWindow_frame
 from app import Application
-from send_message_box import send_discard_message_box, send_information_message_box
+from send_message_box import *
 from check_input_info import *
 
 
@@ -116,7 +116,7 @@ class PartnerAddFrame(QFrame):
 
 
 
-    def add_new_partner(self):
+    def add_new_partner(self, messageStart: bool=True):
         ''' Метод добавления нового партнера в базу данных '''
 
         partner_dict_data: dict = {
@@ -134,12 +134,17 @@ class PartnerAddFrame(QFrame):
 
         try:
             if self.db.add_partner(partner_dict_data):
-                send_information_message_box("Добавлен")
+                if messageStart:
+                    send_information_message_box("Добавлен")
                 return
-            send_discard_message_box("Ошибка")
+            # UserMessageBox().send_discard_message_box("Ошибка")
+            if messageStart:
+                send_discard_message_box("Ошибка")
         except Exception:
             print("error")
-            send_discard_message_box("Ошибка")
+            # UserMessageBox().send_discard_message_box("Ошибка")
+            if messageStart:
+                send_discard_message_box("Ошибка")
 
 
 

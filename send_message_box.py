@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QMessageBox
 from PySide6.QtCore import QSize, QRect
 
+
+
 def send_information_message_box(message_text: str):
     ''' Отправка информационного сообщения '''
     msgBox = QMessageBox()

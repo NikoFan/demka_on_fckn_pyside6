@@ -14,6 +14,7 @@ from db.database import Database
 from send_message_box import *
 from Partner import Partner
 
+
 class Application(QWidget):
     ''' Класс приложения '''
 
@@ -146,9 +147,12 @@ class Application(QWidget):
 
 
     # Обработка закрытия окна
-    def closeEvent(self, event):
+    def closeEvent(self, event, param=False):
         # Пользователь отвечает на сообщение ДА - 16000 НЕТ - 66000 (это код кнопки)
-        if send_information_message_box("Выйти из приложения?") < 17000:
+        print(event)
+        if param:
+            exit()
+        if UserMessageBox().send_information_message_box("Выйти из приложения?") < 17000:
             event.accept()
         else:
             event.ignore()
