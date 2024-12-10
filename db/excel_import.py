@@ -15,17 +15,13 @@ from database import Database
 
 
 # Верный код добавления - остальные пока не работают
-def Partners_import(table_name: str):
+def Partners_import(table_name: str, database):
     ''' Заполнение '''
     print("excel/" + table_name + ".xlsx")
-    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/Partners_import.xlsx", engine='openpyxl')
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/"+table_name, engine='openpyxl')
     print(df)
     query = """INSERT INTO partners VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-    database = pg.connect(database=db_name,
-                          user=user,
-                          password=password,
-                          host=host,
-                          port=port)
+
     cursor = database.cursor()
     for stroka in df.itertuples():
         print(stroka)
@@ -54,11 +50,11 @@ def Partners_import(table_name: str):
 
     database.commit()
 
-def Product_type_import(table_name: str):
+def Product_type_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO product_type VALUES (%s, %s)"""
-    df = pd.read_excel("./excel_files/" + table_name + ".xlsx", engine='openpyxl')
-    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    cursor = database.cursor()
     for r in df.itertuples():
         print(r)
         product_type_name = r._1
@@ -67,18 +63,18 @@ def Product_type_import(table_name: str):
         values = (product_type_name,
                   product_index,)
 
-        # cursor.execute(query, values)
+        cursor.execute(query, values)
 
-        # cursor.close()
-    # .commit
+        cursor.close()
+    database.commit()
 
 
-def Products_import(table_name: str):
+def Products_import(table_name: str, database):
     ''' Заполнение '''
 
     query = """INSERT INTO products VALUES (%s, %s, %s, %s)"""
-    df = pd.read_excel("./excel_files/" + table_name + ".xlsx", engine='openpyxl')
-    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    cursor = database.cursor()
     for r in df.itertuples():
         print(r)
         product_type_name_fk = r._1
@@ -91,18 +87,17 @@ def Products_import(table_name: str):
                   product_article,
                   product_min_cost)
 
-        # cursor.execute(query, values)
+        cursor.execute(query, values)
 
-    # cursor.close()
+        cursor.close()
+    database.commit()
 
-    # database.commit()
 
-
-def Partner_products_import(table_name: str):
+def Partner_products_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO history VALUES (%s, %s, %s, %s)"""
-    df = pd.read_excel("./excel_files/" + table_name + ".xlsx", engine='openpyxl')
-    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    cursor = database.cursor()
     for r in df.itertuples():
         print(r)
         product_name_fk = r.Продукция
@@ -115,18 +110,16 @@ def Partner_products_import(table_name: str):
                   history_products_count,
                   history_sale_date)
 
-        # cursor.execute(query, values)
+        cursor.execute(query, values)
 
-    # cursor.close()
+        cursor.close()
+    database.commit()
 
-    # database.commit()
-
-
-def Material_type_import(table_name: str):
+def Material_type_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO material_type VALUES (%s, %s)"""
-    df = pd.read_excel("./excel_files/" + table_name + ".xlsx", engine='openpyxl')
-    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    cursor = database.cursor()
     for r in df.itertuples():
         print(r)
         material_type_name = r._1
@@ -135,23 +128,26 @@ def Material_type_import(table_name: str):
         values = (material_type_name,
                   material_break_percent)
 
-        # cursor.execute(query, values)
+        cursor.execute(query, values)
 
-    # cursor.close()
-
-    # database.commit()
+        cursor.close()
+    database.commit()
 
 
 def insert_table():
     ''' Вызов всех файлов для импорта '''
 
+    database = pg.connect(database=db_name,
+                          user=user,
+                          password=password,
+                          host=host,
+                          port=port)
 
-
-    # Partners_import("Partners_import")
-    #Product_type_import("Product_type_import")
-    # Products_import("Products_import")
-    # Partner_products_import("Partner_products_import")
-    # Material_type_import("Material_type_import")
+    # Partners_import("Partners_import.xlsx", database)
+    # Product_type_import("Product_type_import.xlsx", database)
+    # Products_import("Products_import.xlsx", database)
+    # Partner_products_import("Partner_products_import.xlsx", database)
+    # Material_type_import("Material_type_import.xlsx", database)
 
 
 
