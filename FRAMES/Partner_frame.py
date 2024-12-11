@@ -16,7 +16,6 @@ class PartnerAddFrame(QFrame):
     ''' Класс добавления партнера '''
 
     def __init__(self, parent, controller):
-
         QFrame.__init__(self, parent)
         self.controller = controller
         self.db = controller.db
@@ -34,7 +33,6 @@ class PartnerAddFrame(QFrame):
         self.title_add_window_name.setText("Добавить партнера")
         self.title_add_window_name.setObjectName("Title")
         self.container.addWidget(self.title_add_window_name)
-
 
         # Добавление объектов на Фрейм
         self.create_text_enter_hint("Имя партнера")

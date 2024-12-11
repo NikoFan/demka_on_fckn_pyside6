@@ -65,7 +65,7 @@ def Product_type_import(table_name: str, database):
 
         cursor.execute(query, values)
 
-        cursor.close()
+    cursor.close()
     database.commit()
 
 
@@ -89,7 +89,7 @@ def Products_import(table_name: str, database):
 
         cursor.execute(query, values)
 
-        cursor.close()
+    cursor.close()
     database.commit()
 
 
@@ -112,7 +112,7 @@ def Partner_products_import(table_name: str, database):
 
         cursor.execute(query, values)
 
-        cursor.close()
+    cursor.close()
     database.commit()
 
 def Material_type_import(table_name: str, database):
@@ -130,7 +130,7 @@ def Material_type_import(table_name: str, database):
 
         cursor.execute(query, values)
 
-        cursor.close()
+    cursor.close()
     database.commit()
 
 
