@@ -1,11 +1,8 @@
 import pandas as pd
-import openpyxl
 import psycopg2 as pg
 
 from config import *
 
-# Классы
-from database import Database
 
 '''
 При выводе строк датафрейма по какой-то причине некоторые столбцы отображались как _1 и _2,
