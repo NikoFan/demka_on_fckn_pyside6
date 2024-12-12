@@ -16,13 +16,10 @@ def Partners_import(table_name: str, database):
     ''' Заполнение '''
     print("excel/" + table_name + ".xlsx")
     df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/"+table_name, engine='openpyxl')
-    print(df)
     query = """INSERT INTO partners VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
 
     cursor = database.cursor()
     for stroka in df.itertuples():
-        print(stroka)
-        print(stroka._1)
         partner_type = stroka._1
         partner_name = stroka._2
         partner_director = stroka.Директор
@@ -50,7 +47,7 @@ def Partners_import(table_name: str, database):
 def Product_type_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO product_type VALUES (%s, %s)"""
-    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')
     cursor = database.cursor()
     for r in df.itertuples():
         print(r)
@@ -70,7 +67,7 @@ def Products_import(table_name: str, database):
     ''' Заполнение '''
 
     query = """INSERT INTO products VALUES (%s, %s, %s, %s)"""
-    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')
     cursor = database.cursor()
     for r in df.itertuples():
         print(r)
@@ -93,7 +90,7 @@ def Products_import(table_name: str, database):
 def Partner_products_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO history VALUES (%s, %s, %s, %s)"""
-    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')
     cursor = database.cursor()
     for r in df.itertuples():
         print(r)
@@ -115,12 +112,13 @@ def Partner_products_import(table_name: str, database):
 def Material_type_import(table_name: str, database):
     ''' Заполнение '''
     query = """INSERT INTO material_type VALUES (%s, %s)"""
-    df = pd.read_excel("/home/student/IdeaProjects/Demka/excel/" + table_name, engine='openpyxl')    # cursor = database.cursor()
+    df = pd.read_excel("/home/spirit2/Desktop/pyside_demka/excel/" + table_name, engine='openpyxl')
     cursor = database.cursor()
     for r in df.itertuples():
         print(r)
         material_type_name = r._1
-        material_break_percent = r._2
+        material_break_percent = f"0.{str(r._2)[-2:]}%"
+        print(material_break_percent)
 
         values = (material_type_name,
                   material_break_percent)

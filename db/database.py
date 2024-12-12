@@ -364,3 +364,4 @@ class Database:
         except Exception as e:
             print(f"Ошибка выполнения запроса: {e}")
             return False
+
