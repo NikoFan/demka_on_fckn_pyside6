@@ -98,7 +98,6 @@ class Application(QWidget):
     #     self.frames_container.setCurrentWidget(current_frame)
 
 
-    @Slot()
     def show_arg_frame(self, frame, partner_name: str = Partner.get_name()):
         """ Открытие фрейма по нажатию кнопки + установка имени обрабатываемого партнера """
 
@@ -136,7 +135,7 @@ class Application(QWidget):
         В каждом фрейме создана такая функция.
         Это позволит избежать конфликта, когда функция вызывается, а в фрейме ее нет
         """
-        current_frame.update_start_values()
+        # current_frame.update_start_values()
 
         # Добавление обновленного фрейма в контейнер
         self.frames_container.addWidget(current_frame)
@@ -185,6 +184,10 @@ QLabel {
     font-size: 25px;
     font-weight: bold;
     qproperty-alignment: AlignCenter;
+}
+
+#Image {
+qproperty-alignment: AlignLeft;
 }
 
 /* Сделать белой подложку в области прокрутки*/

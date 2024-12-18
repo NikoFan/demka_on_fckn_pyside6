@@ -21,6 +21,7 @@ class HistoryFrame(QFrame):
         QFrame.__init__(self, parent)
         self.controller = controller
         self.db = controller.db
+        self.update_start_values()
 
 
         # self.setLayout(self.update_start_values())

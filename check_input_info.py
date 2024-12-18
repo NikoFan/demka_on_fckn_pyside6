@@ -5,7 +5,7 @@ import re # Регулярка
 from db.database import *
 
 
-def route(partner_info: dict):
+def routes(partner_info: dict):
     ''' Маршрутизатор проверок '''
     try:
         if (check_name(partner_info['name']) and

@@ -11,7 +11,7 @@ from config import *
 '''
 
 
-# Верный код добавления - остальные пока не работают
+
 def Partners_import(table_name: str, database):
     ''' Заполнение '''
     print("excel/" + table_name + ".xlsx")

@@ -32,13 +32,10 @@ class PartnerUpdateFrame(QFrame):
         self.controller = controller
         self.db = controller.db
 
-        # Создание контейнера для Элементов окна
-        self.container = QVBoxLayout()
-
-
+        self.update_start_values()
 
         # Выгрузка контейнера с содержимым на фрейм
-        self.setLayout(self.container)
+
 
 
 
@@ -46,6 +43,8 @@ class PartnerUpdateFrame(QFrame):
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
+        self.container = QVBoxLayout()
+
         # Получение стартовых данных о партнере
         """
         Полученные данные будут установлены в качестве стартовых в поля для ввода
@@ -109,6 +108,8 @@ class PartnerUpdateFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
+        self.setLayout(self.container)
+
 
     # Установка текста подсказки над полем для ввода
     def create_text_enter_hint(self, hint_message: str):
@@ -118,9 +119,9 @@ class PartnerUpdateFrame(QFrame):
         self.container.addWidget(hint)
 
     # Обработчик нажатий на кнопку "Обновить"
-    def update_partner_information(self, messageStart: bool = True):
+    def update_partner_information(self, no_message_for_test: bool = False):
         ''' Метод обновления информации о партнере в БД
-        messageStart - Нужна для тестирования. При передачи в нее значения False - Она запрещает
+        no_message_for_test - Нужна для тестирования. При передачи в нее значения True - Она запрещает
         вызывать MessageBox, и это позволяет закончить тестирование '''
 
         partner_dict_data: dict = {
@@ -137,8 +138,11 @@ class PartnerUpdateFrame(QFrame):
         print(check_phone(self.partner_phone_entry.text()[3:]))
 
         try:
+            print("result: ", self.db.update_partners_data(partner_dict_data))
             if self.db.update_partners_data(partner_dict_data):
-                if messageStart:
+                print(no_message_for_test, "msg start")
+                if not no_message_for_test:
+                    print("Negr")
                     send_information_message_box("Обновлен")
 
                 # Обновление имени Активного партнера
@@ -148,11 +152,11 @@ class PartnerUpdateFrame(QFrame):
                 """
                 Partner.set_name(self.partner_name_entry.text())
                 return
-            if messageStart:
+            if not no_message_for_test:
                 send_discard_message_box("Ошибка")
         except Exception:
             print("error")
-            if messageStart:
+            if not no_message_for_test:
                 send_discard_message_box("Ошибка")
 
     # Функция создания поля для ввода текста

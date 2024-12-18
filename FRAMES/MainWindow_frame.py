@@ -1,7 +1,8 @@
 # Импорт библиотек
+from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import (
-
+    QHBoxLayout,
     QVBoxLayout,
     QFrame,
     QWidget,
@@ -62,8 +63,21 @@ class MainWindow(QFrame):
 
         # Создание Заголовка окна
         """ При создании устанавливается объектное имя Title, Которое содержит в себе стили Заголовка """
-        self.widgets_layout_container.addWidget(QLabel("Список партнеров",
-                                                       objectName="Title"))
+
+        # Создание виджета для хранения иконки и заголовка окна
+        self.header_widget = QWidget()
+        self.header_widget_layout = QHBoxLayout(self.header_widget)
+
+        self.frame_title = QLabel("Список партнеров")
+        self.frame_title.setObjectName("Title")
+
+        # Добавление фото
+        self.picture = self.create_screen_picture()
+
+        self.header_widget_layout.addWidget(self.frame_title)
+        self.header_widget_layout.addWidget(self.picture)
+
+        self.widgets_layout_container.addWidget(self.header_widget)
 
         # Добавление контейнера в область прокрутки
         """ Создание карточек, их заполнение и настройка происходит в отдельной функции """
@@ -102,6 +116,18 @@ class MainWindow(QFrame):
 
         # Добавление контейнера виджетов на фрейм
         self.setLayout(self.widgets_layout_container)
+
+    def create_screen_picture(self):
+        """ Добавление фотографии на фрейм """
+        self.picture_socket = QLabel(self)
+        self.picture_socket.setObjectName("Image")
+
+        self.pixmap_picture = QPixmap(u'./res/app_icon_png.png')
+        self.picture_socket.setScaledContents(True)
+        self.picture_socket.setPixmap(self.pixmap_picture)
+
+        self.picture_socket.setFixedSize(52, 52)
+        return self.picture_socket
 
     # Расчет скидки для партнера
     def take_discount(self, partner_name: str):
@@ -212,9 +238,6 @@ class MainWindow(QFrame):
         ''' Создание контейнера для виджетов в который будут помещаться картовки товаров '''
         scroll_area_widgets_container = QWidget()
         scroll_area_widgets_container.setObjectName("scroll_area_widgets_container")
-
-        # Отступы от краев
-        scroll_area_widgets_container.setContentsMargins(10, 10, 10, 10)
 
         return scroll_area_widgets_container
 

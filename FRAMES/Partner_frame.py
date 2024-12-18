@@ -20,14 +20,16 @@ class PartnerAddFrame(QFrame):
         self.controller = controller
         self.db = controller.db
 
-        self.container = QVBoxLayout()
 
-        self.setLayout(self.container)
+        self.update_start_values()
+
+
 
 
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
+        self.container = QVBoxLayout()
 
         self.title_add_window_name = QLabel(self)
         self.title_add_window_name.setText("Добавить партнера")
@@ -52,7 +54,7 @@ class PartnerAddFrame(QFrame):
 
         self.create_text_enter_hint("ИНН партнера")
         self.partner_inn_entry = self.create_pattern_Qline_edit("Введите ИНН партнера")
-        self.partner_phone_entry.setMaxLength(10)
+        self.partner_inn_entry.setMaxLength(10)
 
         self.create_text_enter_hint("Рейтинг партнера")
         self.partner_rate_entry = self.create_pattern_Qline_edit("Введите рейтинг партнера")
@@ -78,6 +80,8 @@ class PartnerAddFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
+        self.setLayout(self.container)
+
     # Установка подсказки над полем для ввода
     def create_text_enter_hint(self, hint_message: str):
         ''' Создание подсказки для ввода текста '''
@@ -86,9 +90,9 @@ class PartnerAddFrame(QFrame):
         self.container.addWidget(hint)
 
     # Обработчик нажатия на кнопку "Добавить"
-    def add_new_partner(self, messageStart: bool=True):
+    def add_new_partner(self, messageStart: bool = False):
         ''' Метод добавления нового партнера в базу данных
-        messageStart - Нужна для тестирования. При передачи в нее значения False - Она запрещает
+        messageStart - Нужна для тестирования. При передачи в нее значения True - Она запрещает
         вызывать MessageBox, и это позволяет закончить тестирование '''
 
         """ Словарь с данными из полей для ввода"""
@@ -107,13 +111,13 @@ class PartnerAddFrame(QFrame):
 
         try:
             if self.db.add_partner(partner_dict_data):
-                if messageStart:
+                if not messageStart:
                     send_information_message_box("Добавлен")
                 return
-            if messageStart:
+            if not messageStart:
                 send_discard_message_box("Ошибка")
         except Exception:
-            if messageStart:
+            if not messageStart:
                 send_discard_message_box("Ошибка")
 
     # Функция для создания поля дла ввода

@@ -20,6 +20,8 @@ class UselessFrame(QFrame):
         self.controller = controller
         self.widgets_container = QVBoxLayout(QWidget(self))
 
+        self.update_start_values()
+
 
 
 
@@ -69,6 +71,8 @@ class UselessFrame(QFrame):
         self.pixmap_picture = QPixmap(u'./res/app_icon_png.png')
         self.picture_socket.setScaledContents(True)
         self.picture_socket.setPixmap(self.pixmap_picture)
+
+        self.picture_socket.setFixedSize(100, 100)
         return self.picture_socket
 
 

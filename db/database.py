@@ -8,7 +8,7 @@ from Partner import Partner
 from .config import *
 
 # Файл проверки информации
-from check_input_info import *
+import check_input_info
 
 '''
 -> Класс Database используется для работы с БД
@@ -135,7 +135,7 @@ class Database:
 
         try:
             # Отправка поступивших данных на проверку в check_input_info.py
-            if not route(partner_data):
+            if not check_input_info.routes(partner_data):
                 # Если проверка не пройдена -> Отклонено в регистрации
                 return False
 
@@ -233,15 +233,18 @@ class Database:
     def update_partners_data(self, res: dict):
         ''' Обновление данных _определенного_ партнера в таблицу partners
         res: dict -> ресурсы, которые изменяются '''
+        print("start")
 
         if not self.connection:
             print("Нет соединения с базой данных.")
             return False
         try:
             # Отправка поступивших данных на проверку в check_input_info.py
-            if not route(res):
-                print(9)
+            if not check_input_info.routes(res):
+                print("err")
                 return False
+
+            print("complete")
 
             # Инструмент для работы с запросами
             cursor = self.connection.cursor()
@@ -272,7 +275,8 @@ class Database:
             cursor.close()
             return True
 
-        except Exception:
+        except Exception as e:
+            print("err:", e)
             return False
 
     # Получение истории о продажах партнера
