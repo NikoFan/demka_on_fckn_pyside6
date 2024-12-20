@@ -1,6 +1,3 @@
-# Библиотеки
-from math import trunc
-
 import psycopg2
 
 # Классы

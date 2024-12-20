@@ -45,6 +45,9 @@ class Application(QWidget):
         # Установка иконки
         self.setWindowIcon(icon)
 
+
+        self.name_fucking = "YEXT"
+
         """ Инициализация переменных """
         # Инициализация базы данных
         # В дальнейшем пользователь будет взаимодействовать с ней через controller.db

@@ -53,7 +53,7 @@ class PartnerUpdateFrame(QFrame):
 
         # Создание заголовка окна
         self.title_add_window_name = QLabel(self)
-        self.title_add_window_name.setText("Добавить партнера")
+        self.title_add_window_name.setText("Обновить партнера")
 
         # Установка имени объекта, к которому уже есть стиль Заголовка
         self.title_add_window_name.setObjectName("Title")
@@ -71,9 +71,6 @@ class PartnerUpdateFrame(QFrame):
 
         self.create_text_enter_hint("Телефон партнера (формат +7 9хх ххх хх хх)")
         self.partner_phone_entry = self.create_pattern_Qline_edit(self.partner_late_info['phone'].strip())
-
-        # Установка максимальной длины (не знаю почему, но с 12 работает некорректно)
-        self.partner_phone_entry.setMaxLength(13)
 
         # Установка маски для ввода
         self.partner_phone_entry.setInputMask("+7 000 000 00 00")

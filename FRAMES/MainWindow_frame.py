@@ -27,6 +27,15 @@ class MainWindow(QFrame):
         self.db = controller.db
 
 
+        print("--", dir(controller))
+
+        for value in dir(controller):
+            print("Value:", value)
+        print("------------------------------------------------")
+        for peremennaya_klassa, znachenie in controller.__dict__.items():
+            print(peremennaya_klassa, ":", znachenie)
+
+
         # Вызов функции для заполнения фрейма данными
         '''
         Функция update_start_values() заполняет фрейм минимальными данными

@@ -23,10 +23,6 @@ class HistoryFrame(QFrame):
         self.db = controller.db
         self.update_start_values()
 
-
-        # self.setLayout(self.update_start_values())
-        # self.update_start_values()
-
     def update_start_values(self):
         ''' Обновление стартовых данных о партнере '''
 
@@ -38,7 +34,7 @@ class HistoryFrame(QFrame):
         self.widgets_container = QVBoxLayout()
         self.tables = QTreeWidget()
 
-        self.tables.setColumnCount(3)
+        # self.tables.setColumnCount(3)
         self.tables.setHeaderLabels(["Продукт", "Партнер", "Количество", "Дата"])
 
         self.partner_name = None

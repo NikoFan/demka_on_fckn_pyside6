@@ -33,7 +33,6 @@ class PartnerInformationFrame(QFrame):
         ''' Обновление стартовых данных о партнере '''
 
         self.widgets_container = QVBoxLayout(QWidget(self))
-        self.widgets_container.setContentsMargins(10, 10, 10, 10)
 
         partner_data = self.db.get_partner_by_name(Partner.get_name())
 
