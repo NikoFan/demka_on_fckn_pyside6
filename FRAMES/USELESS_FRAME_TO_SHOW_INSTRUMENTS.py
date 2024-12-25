@@ -18,7 +18,7 @@ class UselessFrame(QFrame):
     def __init__(self, parent, controller):
         QFrame.__init__(self, parent)
         self.controller = controller
-        self.widgets_container = QVBoxLayout(QWidget(self))
+        self.widgets_container = QVBoxLayout(self)
 
         self.update_start_values()
 
@@ -51,7 +51,6 @@ class UselessFrame(QFrame):
 
         self.widgets_container.addWidget(self.read_btn)
         self.widgets_container.addWidget(self.back)
-        self.setLayout(self.widgets_container)
 
 
 

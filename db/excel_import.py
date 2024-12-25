@@ -10,8 +10,6 @@ from config import *
 Поэтому при заполнении таблиц используется разное наименование
 '''
 
-
-
 def Partners_import(table_name: str, database):
     ''' Заполнение '''
     print("excel/" + table_name + ".xlsx")
@@ -117,7 +115,10 @@ def Material_type_import(table_name: str, database):
     for r in df.itertuples():
         print(r)
         material_type_name = r._1
-        material_break_percent = f"0.{str(r._2)[-2:]}%"
+
+        # При создании таблицы % были выставлены форматированием ячейки - теперь 0.1% выглядит как 0.001
+        # Для предотвращения умножаем на 100 и округляем до 2х после запятой
+        material_break_percent = f"{round(r._2 * 100, 2)}%"
         print(material_break_percent)
 
         values = (material_type_name,

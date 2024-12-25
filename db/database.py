@@ -31,59 +31,49 @@ class Database:
             )
             print("Соединение с базой данных установлено")
             return connection
-        except Exception as e:
-            print(f"Ошибка подключения к базе данных: {e}")
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return None
 
     # Получение суммы продаж от _определенного_ партнера
     def get_sum_sales(self, partner_name: str):
-        ''' Полученгие суммы продаж партнера
-        partner_name: str -> имя _определенного_ партнера '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return []
-
+        '''
+        Функция получения суммы продаж
+        :param partner_name: Имя партнера для которого ищется сумма продаж
+        :return: Цифра продаж
+        '''
         try:
-            # Инициализация инструмента для работы с БД
-            # cursor -> используется для запуска и обработки запросов
             cursor = self.connection.cursor()
 
-            # Запрос получения СУММЫ продаж из таблицы history
-            # Где имя партнера равняется _определенному_
             query = f"""
-                SELECT SUM(history_products_count) as result_pr
+                SELECT SUM(history_products_count) as sale_result
                 FROM history
                 WHERE partner_name_fk = '{partner_name}';
             """
 
             # Исполнение запроса
-            cursor.execute(query, (partner_name,))
+            cursor.execute(query)
+
+            # В ответ приходит 1 строка с 1 значением
+            answer = cursor.fetchone()
 
             # Список со словарем, где хранится результат запроса
-            sales_data = [
-                {
-                    "count": row[0]
-                }
-                # Перебор кортежа на выходе из запроса
-                for row in cursor.fetchall()
-            ]
+            if answer:
+                cursor.close()
+                # Возвращаем то значение из строки
+                return answer[0]
 
-            # Отключение инструмента
-            cursor.close()
-            return sales_data
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
-            return []
+            return None
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
+            return None
 
     # Извлечение информации по партнерам
     def get_partners(self):
-        ''' Извлечение кортежа с информацией по партнерам '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return []
-
+        '''
+        Функция получения информации о пользователе
+        :return: Список с словарями, в которых хранится вся информация о партнерах
+        '''
         try:
             # Инструмент для работы с Запросами БД
             cursor = self.connection.cursor()
@@ -98,9 +88,9 @@ class Database:
             # Исполнение Запроса
             cursor.execute(query)
 
-            # Список со словарем выходных данных из запроса
-            partners = [
-                {
+            partners_data_list = []
+            for row in cursor.fetchall():
+                partners_data_list.append({
                     "name": row[0],
                     "phone": row[1],
                     "type": row[2],
@@ -109,31 +99,28 @@ class Database:
                     "inn": row[5],
                     "rate": row[6],
                     "director": row[7]
-                }
-                # Перебор результата работы запроса
-                for row in cursor.fetchall()
-            ]
+                })
+
 
             # Закрытие запроса
             cursor.close()
-            return partners
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
+            return partners_data_list
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return []
 
     # Добавление партнера в БД
     def add_partner(self, partner_data: dict):
-        ''' Добавление нового партнера в БД
-        partner_data: dict -> словарь с данными на регистрацию '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return False
-
+        '''
+        Функция добавления нового партнера в таблицу partners
+        :param partner_data: Словарь с данными на добавление
+        :return: True / False : Успешно / Ошибка
+        '''
         try:
             # Отправка поступивших данных на проверку в check_input_info.py
             if not check_input_info.routes(partner_data):
                 # Если проверка не пройдена -> Отклонено в регистрации
+                print("Проверка данных выявила ошибку")
                 return False
 
             # Инструмент для работы с запросами
@@ -165,19 +152,17 @@ class Database:
             cursor.close()
             print(f"Партнер '{partner_data['name']}' успешно добавлен.")
             return True
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return False
 
     # Извлечение информации по _определенному_ партнеру
     def get_partner_by_name(self, partner_name: str):
-        ''' Извлечение информации из БД по имени определенного партнера
-        partner_name: str -> имя _определенного_ партнера '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return None
-
+        '''
+        Получение информации о партнере по имени
+        :param partner_name: Имя партнера, чья информация нужна для работы
+        :return: словарь с данными о партнере
+        '''
         try:
             # Инструмент для работы с запросами
             cursor = self.connection.cursor()
@@ -214,8 +199,8 @@ class Database:
             else:
                 print(f"Партнер с именем '{partner_name}' не найден.")
                 return None
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return None
 
     # Закрытие соединения с БД
@@ -227,18 +212,16 @@ class Database:
             print("Соединение с базой данных закрыто")
 
     # Обновление информации про партнера
-    def update_partners_data(self, res: dict):
-        ''' Обновление данных _определенного_ партнера в таблицу partners
-        res: dict -> ресурсы, которые изменяются '''
-        print("start")
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return False
+    def update_partners_data(self, new_partner_data_to_update: dict):
+        '''
+        Функция обновления информации о партнере
+        :param new_partner_data_to_update: Словарь с данными для обновления
+        :return: True - Обновилось / False - Ошибка работы
+        '''
         try:
             # Отправка поступивших данных на проверку в check_input_info.py
-            if not check_input_info.routes(res):
-                print("err")
+            if not check_input_info.routes(new_partner_data_to_update):
+                print("Проверка данных выявила ошибку")
                 return False
 
             print("complete")
@@ -250,14 +233,14 @@ class Database:
             query = f'''
             UPDATE partners
             SET
-            partner_type = '{res['type']}',
-            partner_name = '{res['name']}',
-            partner_director = '{res['director']}',
-            partner_mail = '{res['mail']}',
-            parnter_phone = '{res['phone']}',
-            partner_ur_addr = '{res['ur_addr']}',
-            partner_inn = '{res['inn']}',
-            partner_rate = {res['rate']}
+            partner_type = '{new_partner_data_to_update['type']}',
+            partner_name = '{new_partner_data_to_update['name']}',
+            partner_director = '{new_partner_data_to_update['director']}',
+            partner_mail = '{new_partner_data_to_update['mail']}',
+            parnter_phone = '{new_partner_data_to_update['phone']}',
+            partner_ur_addr = '{new_partner_data_to_update['ur_addr']}',
+            partner_inn = '{new_partner_data_to_update['inn']}',
+            partner_rate = {new_partner_data_to_update['rate']}
 
             WHERE partner_name = '{Partner.get_name()}';
             '''
@@ -272,97 +255,45 @@ class Database:
             cursor.close()
             return True
 
-        except Exception as e:
-            print("err:", e)
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return False
 
     # Получение истории о продажах партнера
     def get_sales_data(self, partner_name: str):
-        ''' Получение информации из таблицы history про историю торговли _определенного_ партнера
-        partner_name: str -> имя _определенного_ партнера '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return []
-
+        '''
+        Функция получения истории продаж партнера
+        :param partner_name: Имя партнера, для которого собирается история
+        :return: sales_history - Список с данными для таблицы истории
+        '''
         try:
             # Инструмент для работы с запросами
             cursor = self.connection.cursor()
 
             # Запрос
-            query = """
-                SELECT 
-                    p.product_name AS product_name,
-                    pr.partner_name AS partner_name,
-                    h.history_products_count AS quantity,
-                    h.history_sale_date AS sale_date
-                FROM 
-                    history h
-                JOIN 
-                    products p ON h.product_name_fk = p.product_name
-                JOIN 
-                    partners pr ON h.partner_name_fk = pr.partner_name
-                WHERE 
-                    pr.partner_name = %s;
+            query = f"""
+                SELECT product_name_fk, partner_name_fk, history_products_count, history_sale_date
+                FROM history
+                WHERE partner_name_fk = '{partner_name}'
             """
 
             # Исполнение запроса
-            cursor.execute(query, (partner_name,))
+            cursor.execute(query)
 
             # Список со словарем, где хранится результат запроса
-            sales_data = [
-                {
+            sales_history = []
+            for row in cursor.fetchall():
+                sales_history.append({
                     "product_name": row[0].strip(),
                     "partner_name": row[1].strip(),
-                    "quantity": row[2],
-                    "sale_date": row[3]
-                }
-                # Перебор кортежа от запроса
-                for row in cursor.fetchall()
-            ]
+                    "quantity": str(row[2]),
+                    "sale_date": str(row[3])
+                })
 
             # Закрытие инструмента
             cursor.close()
-            return sales_data
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
+            return sales_history
+        except Exception as error_string:
+            print(f"Ошибка выполнения запроса: {error_string}")
             return []
-
-    # Проверка дубликата ИНН
-    def check_duplicate_inn(self, inn: str):
-        ''' Проверка на совпадение ИНН нового партнера
-        inn: str -> ИНН партнера '''
-
-        if not self.connection:
-            print("Нет соединения с базой данных.")
-            return None
-
-        try:
-            # Инструмент для работы с запросами
-            cursor = self.connection.cursor()
-
-            # Запрос
-            query = """
-                SELECT partner_inn
-                FROM partners
-                WHERE partner_inn LIKE '%s'
-            """
-
-            # Исполнение запроса
-            cursor.execute(query, (inn,))
-
-            # Перебор выходных кортежей функцией python
-            row = cursor.fetchone()
-
-            # Отключение инструмента
-            cursor.close()
-
-            # Возврат информации про партнера
-            if row:
-                return True
-            else:
-                return False
-        except Exception as e:
-            print(f"Ошибка выполнения запроса: {e}")
-            return False
 

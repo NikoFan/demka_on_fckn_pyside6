@@ -4,6 +4,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLabel,
     QVBoxLayout,
+    QComboBox,
     QLineEdit)
 
 from FRAMES import MainWindow_frame
@@ -21,11 +22,10 @@ class PartnerAddFrame(QFrame):
         self.db = controller.db
         self.update_start_values()
 
-
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
-        self.container = QVBoxLayout()
+        self.container = QVBoxLayout(self)
 
         self.title_add_window_name = QLabel(self)
         self.title_add_window_name.setText("Добавить партнера")
@@ -36,13 +36,11 @@ class PartnerAddFrame(QFrame):
         self.create_text_enter_hint("Имя партнера")
         self.partner_name_entry = self.create_pattern_Qline_edit("Введите имя партнера")
 
-
         self.create_text_enter_hint("Юридический адрес партнера")
         self.partner_address_entry = self.create_pattern_Qline_edit("Введите адрес партнера")
 
         self.create_text_enter_hint("Телефон партнера (формат +7 9хх ххх хх хх)")
         self.partner_phone_entry = self.create_pattern_Qline_edit("")
-        self.partner_phone_entry.setMaxLength(12)
         self.partner_phone_entry.setInputMask("+7 000 000 00 00")
 
         self.create_text_enter_hint("Электронная почта партнера")
@@ -56,11 +54,12 @@ class PartnerAddFrame(QFrame):
         self.partner_rate_entry = self.create_pattern_Qline_edit("Введите рейтинг партнера")
 
         self.create_text_enter_hint("Тип партнера")
-        self.partner_type_entry = self.create_pattern_Qline_edit("Введите тип партнера")
+        self.partner_type_entry = QComboBox()
+        self.partner_type_entry.addItems(["ЗАО", "ПАО", "ОАО", "ООО"])
+        self.container.addWidget(self.partner_type_entry)
 
         self.create_text_enter_hint("Директор партнера")
         self.partner_director_entry = self.create_pattern_Qline_edit("Введите ФИО директора партнера")
-
 
         # Создание кнопки "Добавить"
         self.add = QPushButton(self)
@@ -76,7 +75,7 @@ class PartnerAddFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
-        self.setLayout(self.container)
+
 
     # Установка подсказки над полем для ввода
     def create_text_enter_hint(self, hint_message: str):
@@ -93,14 +92,14 @@ class PartnerAddFrame(QFrame):
 
         """ Словарь с данными из полей для ввода"""
         partner_dict_data: dict = {
-            "type":self.partner_type_entry.text(),
-            "name":self.partner_name_entry.text(),
-            "director":self.partner_director_entry.text(),
-            "mail":self.partner_mail_entry.text(),
-            "phone":self.partner_phone_entry.text()[3:],
-            "ur_addr":self.partner_address_entry.text(),
-            "inn":self.partner_inn_entry.text(),
-            "rate":self.partner_rate_entry.text(),
+            "type": self.partner_type_entry.currentText(),
+            "name": self.partner_name_entry.text(),
+            "director": self.partner_director_entry.text(),
+            "mail": self.partner_mail_entry.text(),
+            "phone": self.partner_phone_entry.text()[3:],
+            "ur_addr": self.partner_address_entry.text(),
+            "inn": self.partner_inn_entry.text(),
+            "rate": self.partner_rate_entry.text(),
         }
         print(self.partner_phone_entry.text()[3:])
         print(check_phone(self.partner_phone_entry.text()[3:]))
@@ -131,12 +130,9 @@ class PartnerAddFrame(QFrame):
         entry.setPlaceholderText(placeholder_message)
         self.container.addWidget(entry)
 
-
         return entry
 
     # Функция для возврата на прошлый фрейм
     def back_to_later_window(self):
         ''' Открытие прошлого окна '''
         self.controller.show_arg_frame(MainWindow_frame.MainWindow)
-
-

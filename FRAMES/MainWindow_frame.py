@@ -26,16 +26,6 @@ class MainWindow(QFrame):
         self.controller = controller
         self.db = controller.db
 
-
-        print("--", dir(controller))
-
-        for value in dir(controller):
-            print("Value:", value)
-        print("------------------------------------------------")
-        for peremennaya_klassa, znachenie in controller.__dict__.items():
-            print(peremennaya_klassa, ":", znachenie)
-
-
         # Вызов функции для заполнения фрейма данными
         '''
         Функция update_start_values() заполняет фрейм минимальными данными
@@ -48,21 +38,12 @@ class MainWindow(QFrame):
         self.update_start_values()
 
     # Обновление стартовых данных на актуальные
-    """
-    Из-за того, что мы ведем работу непосредственно с фреймами,
-    которые загружаются с самого начала работы приложения
-    Они имеют устаревшие данные.
-    При открытии окна следует обновить все его элементы до новейших
-    
-    Поэтому - вытащить все действия по созданию объектов в отдельную функцию - это здравое решение,
-    оно позволяет избежать конфликтов при генерации окна
-    """
     def update_start_values(self):
         ''' Обновление данных до актуальных '''
 
         # Создание контейнера для виджетов
         """ Контейнеры QVBoxLayout() Позволяют масштабировать виджеты и не париться над их расположением """
-        self.widgets_layout_container = QVBoxLayout(QWidget(self))
+        self.widgets_layout_container = QVBoxLayout(self)
 
         # Создание области для карточек партнера
         """ В self.scrollArea располагаются все карточки товара
@@ -123,8 +104,6 @@ class MainWindow(QFrame):
         self.widgets_layout_container.addWidget(self.add_partner_btn)
         self.widgets_layout_container.addWidget(self.useless_frame)
 
-        # Добавление контейнера виджетов на фрейм
-        self.setLayout(self.widgets_layout_container)
 
     def create_screen_picture(self):
         """ Добавление фотографии на фрейм """
@@ -142,7 +121,7 @@ class MainWindow(QFrame):
     def take_discount(self, partner_name: str):
         ''' Расчет скидки (Это прописано в задании) '''
         # Получение суммы продаж партнера
-        count: int = self.db.get_sum_sales(partner_name)[0]['count']
+        count: int = self.db.get_sum_sales(partner_name)
         if (count == None):
             return 0
         if (count > 300000):
@@ -151,14 +130,16 @@ class MainWindow(QFrame):
             return 10
         elif (count > 10000):
             return 5
-        return 5
+        # < 10000
+        return 0
 
     # Создание и заполнение области с партнерами
     def create_partner_cards_for_scroll_area(self):
         ''' Метод создания и заполнения области прокрутки с карточками партнеров '''
 
         # Создание хранилища для карточек партнера
-        self.scroll_area_widgets_container = self.create_scroll_area_widgets_container()
+        scroll_area_widgets_container = QWidget()
+        scroll_area_widgets_container.setObjectName("scroll_area_widgets_container")
 
         # Установка в области хранения вертикальной ориентации при выгрузке
         """ Мы создаем вертикальное отображение, которое отображает объекты хранящиеся в scroll_area_widgets_container
@@ -174,52 +155,50 @@ class MainWindow(QFrame):
                         
         Вот такая матрешка позволяет добавлять дофига объектов и не терять разметку
         """
-        self.vertical_scroll_container = QVBoxLayout(self.scroll_area_widgets_container)
+        vertical_scroll_container = QVBoxLayout(scroll_area_widgets_container)
 
         # Заполнение списка партнеров
         """ Производится запрос к БД, откуда возвращается словарь с данными,
         который мы перебираем в цикле for """
         for partner in self.db.get_partners():
             # Создание виджета для хранения информации по карточке партнера
-            self.partner_card = QWidget()
-            self.partner_card.setObjectName("partner_card")
+            partner_card = QWidget()
+            partner_card.setObjectName("partner_card")
 
             # Установка в self.partner_card вертикальной ориентации
-            self.partner_card_info_vbox = QVBoxLayout(self.partner_card)
+            partner_card_info_vbox = QVBoxLayout(partner_card)
 
             # Добавление строк с информацией
             """
             Делается запрос в БД, откуда получается ответ в виде словаря, из которого вычленяются данные
             Пример установки объектного имени при создании QLabel : QLabel(objectName="obj_name")
             """
-            self.partner_card_info_vbox.addWidget(QLabel(f"{partner['type'].strip()} | {partner['name'].strip()}"))
-            self.partner_card_info_vbox.addWidget(QLabel(f"{self.take_discount(partner['name'])}%",
+            partner_card_info_vbox.addWidget(QLabel(f"{partner['type'].strip()} | {partner['name'].strip()}"))
+            partner_card_info_vbox.addWidget(QLabel(f"{self.take_discount(partner['name'])}%",
                                                          objectName="discount"))
-            self.partner_card_info_vbox.addWidget(QLabel(f"Директор: {partner['director'].strip()}"))
-            self.partner_card_info_vbox.addWidget(QLabel(f"Тел.: +7 {partner['phone'].strip()}"))
-            self.partner_card_info_vbox.addWidget(QLabel(f"Рейтинг: {str(partner['rate']).strip()}"))
+            partner_card_info_vbox.addWidget(QLabel(f"Директор: {partner['director'].strip()}"))
+            partner_card_info_vbox.addWidget(QLabel(f"Тел.: +7 {partner['phone'].strip()}"))
+            partner_card_info_vbox.addWidget(QLabel(f"Рейтинг: {partner['rate']}"))
 
 
             # Создание кнопки "Подробнее"
             '''
             Кнопка "Подробнее" находится в карточке товара и ведет в окно 
             '''
-            self.partner_info = QPushButton(self)
-            self.partner_info.setText(f"Подробнее")
-
+            partner_info = QPushButton(f"Подробнее")
             # Установка имени объекта
-            self.partner_info.setObjectName(f"{partner['name'].strip()}")
+            partner_info.setObjectName(f"{partner['name'].strip()}")
 
             # Установка действия при нажатии
-            self.partner_info.clicked.connect(self.open_partner_information_frame)
+            partner_info.clicked.connect(self.open_partner_information_frame)
 
             # Добавление кнопки в карточку
-            self.partner_card_info_vbox.addWidget(self.partner_info)
+            partner_card_info_vbox.addWidget(partner_info)
 
             # Добавление карточки партнера в контейнер
-            self.vertical_scroll_container.addWidget(self.partner_card)
+            vertical_scroll_container.addWidget(partner_card)
 
-        return self.scroll_area_widgets_container
+        return scroll_area_widgets_container
 
     # Область для карточек партнеров
     def create_scroll_area(self):
@@ -230,25 +209,9 @@ class MainWindow(QFrame):
         scroll.setObjectName("PartnerCardScrollArea")
 
         # Установка разрешения на Растягивание области
-        ''' Если будет False -> объекты внутри области будут своего стандартного размера '''
         scroll.setWidgetResizable(True)
         return scroll
 
-    # Создание контейнера для Карточек партнера
-    """
-    Для отображения карточек партнера используется область ScrollArea, однако в нее следует поместить сами карточки
-    Для этого создается контейнер для виджетов, который помещается в ScrollArea
-    
-    // Пример Кода добавления Контейнера с карточками (Widgets) в Область прокрутки (ScrollArea)
-    self.scrollArea.setWidget(self.create_partner_cards_for_scroll_area())
-    """
-    @Slot()
-    def create_scroll_area_widgets_container(self):
-        ''' Создание контейнера для виджетов в который будут помещаться картовки товаров '''
-        scroll_area_widgets_container = QWidget()
-        scroll_area_widgets_container.setObjectName("scroll_area_widgets_container")
-
-        return scroll_area_widgets_container
 
     # Click Listener Для кнопки перехода в окно Добавления партнера (PartnerAddFrame)
     def open_partner_information_frame(self):

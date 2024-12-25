@@ -31,7 +31,7 @@ class HistoryFrame(QFrame):
         для этого достаточно убрать QWidget(self) из скобок в QVBoxLayout()
         и убрать все слова self из скобок
         '''
-        self.widgets_container = QVBoxLayout()
+        self.widgets_container = QVBoxLayout(self)
         self.tables = QTreeWidget()
 
         # self.tables.setColumnCount(3)
@@ -61,7 +61,6 @@ class HistoryFrame(QFrame):
         self.widgets_container.addWidget(self.restore_table_button)
         self.widgets_container.addWidget(self.back)
 
-        self.setLayout(self.widgets_container)
 
 
     def restore_frame(self):

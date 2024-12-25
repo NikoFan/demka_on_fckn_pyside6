@@ -4,7 +4,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLabel,
     QVBoxLayout,
-    QLineEdit)
+    QLineEdit,
+QComboBox)
 
 # Импорт классов
 from FRAMES import Partner_information_frame
@@ -34,7 +35,6 @@ class PartnerUpdateFrame(QFrame):
 
         self.update_start_values()
 
-        # Выгрузка контейнера с содержимым на фрейм
 
 
 
@@ -43,7 +43,7 @@ class PartnerUpdateFrame(QFrame):
     def update_start_values(self):
         ''' Обновление стартовых значений
         Чтобы при открытии окна данные были актуальными '''
-        self.container = QVBoxLayout()
+        self.container = QVBoxLayout(self)
 
         # Получение стартовых данных о партнере
         """
@@ -86,7 +86,10 @@ class PartnerUpdateFrame(QFrame):
         self.partner_rate_entry = self.create_pattern_Qline_edit(self.partner_late_info['rate'])
 
         self.create_text_enter_hint("Тип партнера")
-        self.partner_type_entry = self.create_pattern_Qline_edit(self.partner_late_info['type'].strip())
+        self.combobox_type = QComboBox()
+        self.combobox_type.addItems(["ЗАО", "ООО", "ПАО", "ОАО"])
+        self.container.addWidget(self.combobox_type)
+        # self.partner_type_entry = self.create_pattern_Qline_edit(self.partner_late_info['type'].strip())
 
         self.create_text_enter_hint("Директор партнера")
         self.partner_director_entry = self.create_pattern_Qline_edit(self.partner_late_info['director'].strip())
@@ -105,7 +108,6 @@ class PartnerUpdateFrame(QFrame):
         self.back.clicked.connect(self.back_to_later_window)
         self.container.addWidget(self.back)
 
-        self.setLayout(self.container)
 
 
     # Установка текста подсказки над полем для ввода
@@ -122,7 +124,7 @@ class PartnerUpdateFrame(QFrame):
         вызывать MessageBox, и это позволяет закончить тестирование '''
 
         partner_dict_data: dict = {
-            "type": self.partner_type_entry.text(),
+            "type": self.combobox_type.currentText(),
             "name": self.partner_name_entry.text(),
             "director": self.partner_director_entry.text(),
             "mail": self.partner_mail_entry.text(),
@@ -131,6 +133,7 @@ class PartnerUpdateFrame(QFrame):
             "inn": self.partner_inn_entry.text(),
             "rate": self.partner_rate_entry.text(),
         }
+        print(partner_dict_data)
         print(self.partner_phone_entry.text()[3:])
         print(check_phone(self.partner_phone_entry.text()[3:]))
 

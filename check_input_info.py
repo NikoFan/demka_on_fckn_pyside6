@@ -88,7 +88,7 @@ def check_inn(partner_inn: str):
 def check_phone(partner_phone: str):
     ''' Проверка номера телефона (он должен быть 999 999 99 99) '''
     try:
-        regex = re.compile(r'[94][0-9][0-9] [0-9][0-9][0-9] [0-9][0-9] [0-9][0-9]')
+        regex = re.compile(r'[984][0-9][0-9] [0-9][0-9][0-9] [0-9][0-9] [0-9][0-9]')
         if re.fullmatch(regex, partner_phone):
             return True
         print("false 8")

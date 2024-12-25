@@ -26,13 +26,10 @@ class PartnerInformationFrame(QFrame):
         self.update_start_values()
 
 
-        # self.setLayout(self.update_start_values())
-        # self.update_start_values()
-
     def update_start_values(self):
         ''' Обновление стартовых данных о партнере '''
 
-        self.widgets_container = QVBoxLayout(QWidget(self))
+        self.widgets_container = QVBoxLayout(self)
 
         partner_data = self.db.get_partner_by_name(Partner.get_name())
 
@@ -93,4 +90,4 @@ class PartnerInformationFrame(QFrame):
         )
         self.widgets_container.addWidget(self.on_main_btn)
 
-        self.setLayout(self.widgets_container)
+
