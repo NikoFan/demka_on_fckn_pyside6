@@ -1,6 +1,5 @@
 # Импорт библиотек
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Slot
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QVBoxLayout,
@@ -11,18 +10,18 @@ from PySide6.QtWidgets import (
     QScrollArea)
 
 # Импорт классов
-from FRAMES import  Partner_frame, Partner_information_frame, USELESS_FRAME_TO_SHOW_INSTRUMENTS
+from FRAMES import Partner_frame, Partner_information_frame, USELESS_FRAME_TO_SHOW_INSTRUMENTS
 from Partner import Partner
 
 
 class MainWindow(QFrame):
-    ''' Стартовый класс приложения. Отображает список партнеров и предлагает действия:
-    - Просмотреть подробнее партнера : self.partner_info
-    - Добавить нового партнера : self.add_partner_btn
-    '''
 
-    def __init__(self, parent, controller):
-        QFrame.__init__(self, parent)
+    def __init__(self, controller):
+        '''
+        Конструктор класса демонстрации карточек партнера
+        :param controller: экземпляр класса Application()
+        '''
+        QFrame.__init__(self)
         self.controller = controller
         self.db = controller.db
 
@@ -39,7 +38,10 @@ class MainWindow(QFrame):
 
     # Обновление стартовых данных на актуальные
     def update_start_values(self):
-        ''' Обновление данных до актуальных '''
+        '''
+        Добавление данных на фрейм
+        :return: Ничего
+        '''
 
         # Создание контейнера для виджетов
         """ Контейнеры QVBoxLayout() Позволяют масштабировать виджеты и не париться над их расположением """
@@ -49,77 +51,81 @@ class MainWindow(QFrame):
         """ В self.scrollArea располагаются все карточки товара
         Создание вынесено в отдельную функцию, чтобы не засорять функцию обновления
         """
-        self.scrollArea = self.create_scroll_area()
+        scrollArea = self.create_scroll_area()
 
         # Создание Заголовка окна
         """ При создании устанавливается объектное имя Title, Которое содержит в себе стили Заголовка """
 
         # Создание виджета для хранения иконки и заголовка окна
-        self.header_widget = QWidget()
-        self.header_widget_layout = QHBoxLayout(self.header_widget)
+        header_widget = QWidget()
+        header_widget_layout = QHBoxLayout(header_widget)
 
-        self.frame_title = QLabel("Список партнеров")
-        self.frame_title.setObjectName("Title")
+        frame_title = QLabel("Список партнеров")
+        frame_title.setObjectName("Title")
 
         # Добавление фото
-        self.picture = self.create_screen_picture()
+        picture = self.create_screen_picture()
 
-        self.header_widget_layout.addWidget(self.frame_title)
-        self.header_widget_layout.addWidget(self.picture)
+        header_widget_layout.addWidget(frame_title)
+        header_widget_layout.addWidget(picture)
 
-        self.widgets_layout_container.addWidget(self.header_widget)
+        self.widgets_layout_container.addWidget(header_widget)
 
         # Добавление контейнера в область прокрутки
         """ Создание карточек, их заполнение и настройка происходит в отдельной функции """
-        self.scrollArea.setWidget(self.create_partner_cards_for_scroll_area())
+        scrollArea.setWidget(self.create_partner_cards_for_scroll_area())
 
         # Добавление кнопки "Добавить"
-        self.add_partner_btn = QPushButton(self)
-
-        # Установка текста кнопки
-        self.add_partner_btn.setText("Добавить Партнера")
+        add_partner_btn = QPushButton("Добавить Партнера")
 
         # Установка объектного имени (можно удалить)
-        self.add_partner_btn.setObjectName("Add")
-
+        add_partner_btn.setObjectName("Add")
 
         # Установка действий при нажатии
-        self.add_partner_btn.clicked.connect(self.open_partner_add_frame)
+        add_partner_btn.clicked.connect(
+            lambda: self.controller.show_arg_frame(Partner_frame.PartnerAddFrame)
+        )
 
         # Добавление кнопки "Добавить"
-        self.useless_frame = QPushButton(self)
+        useless_frame = QPushButton()
 
         # Установка текста кнопки
-        self.useless_frame.setText("open_useless_frame")
+        useless_frame.setText("open_useless_frame")
 
         # Установка объектного имени (можно удалить)
-        self.useless_frame.clicked.connect(
-            lambda : self.controller.show_arg_frame(USELESS_FRAME_TO_SHOW_INSTRUMENTS.UselessFrame)
+        useless_frame.clicked.connect(
+            lambda: self.controller.show_arg_frame(USELESS_FRAME_TO_SHOW_INSTRUMENTS.UselessFrame)
         )
 
         # Добавление области прокрутки в контейнер виджетов
-        self.widgets_layout_container.addWidget(self.scrollArea)
+        self.widgets_layout_container.addWidget(scrollArea)
 
         # Добавление кнопки Добавить в контейнер виджетов
-        self.widgets_layout_container.addWidget(self.add_partner_btn)
-        self.widgets_layout_container.addWidget(self.useless_frame)
-
+        self.widgets_layout_container.addWidget(add_partner_btn)
+        self.widgets_layout_container.addWidget(useless_frame)
 
     def create_screen_picture(self):
-        """ Добавление фотографии на фрейм """
-        self.picture_socket = QLabel(self)
-        self.picture_socket.setObjectName("Image")
+        """
+        Создание иконки для помещения на экран
+        :return: picture_socket - QLabel с иконкой
+        """
+        picture_socket = QLabel()
+        picture_socket.setObjectName("Image")
 
-        self.pixmap_picture = QPixmap(u'./res/app_icon_png.png')
-        self.picture_socket.setScaledContents(True)
-        self.picture_socket.setPixmap(self.pixmap_picture)
+        pixmap_picture = QPixmap(u'./res/app_icon_png.png')
+        picture_socket.setScaledContents(True)
+        picture_socket.setPixmap(pixmap_picture)
 
-        self.picture_socket.setFixedSize(52, 52)
-        return self.picture_socket
+        picture_socket.setFixedSize(52, 52)
+        return picture_socket
 
     # Расчет скидки для партнера
     def take_discount(self, partner_name: str):
-        ''' Расчет скидки (Это прописано в задании) '''
+        '''
+        Функция расчета скидки для партнера
+        :param partner_name: Имя партнера для которого расчитывается скидка
+        :return: Число (%) скидки
+        '''
         # Получение суммы продаж партнера
         count: int = self.db.get_sum_sales(partner_name)
         if (count == None):
@@ -135,7 +141,10 @@ class MainWindow(QFrame):
 
     # Создание и заполнение области с партнерами
     def create_partner_cards_for_scroll_area(self):
-        ''' Метод создания и заполнения области прокрутки с карточками партнеров '''
+        '''
+        Создание контейнера с виджетами - Карточками партнера
+        :return: scroll_area_widgets_container - Контейнер с карточками партнеров
+        '''
 
         # Создание хранилища для карточек партнера
         scroll_area_widgets_container = QWidget()
@@ -175,11 +184,10 @@ class MainWindow(QFrame):
             """
             partner_card_info_vbox.addWidget(QLabel(f"{partner['type'].strip()} | {partner['name'].strip()}"))
             partner_card_info_vbox.addWidget(QLabel(f"{self.take_discount(partner['name'])}%",
-                                                         objectName="discount"))
+                                                    objectName="discount"))
             partner_card_info_vbox.addWidget(QLabel(f"Директор: {partner['director'].strip()}"))
             partner_card_info_vbox.addWidget(QLabel(f"Тел.: +7 {partner['phone'].strip()}"))
             partner_card_info_vbox.addWidget(QLabel(f"Рейтинг: {partner['rate']}"))
-
 
             # Создание кнопки "Подробнее"
             '''
@@ -200,10 +208,12 @@ class MainWindow(QFrame):
 
         return scroll_area_widgets_container
 
-    # Область для карточек партнеров
     def create_scroll_area(self):
-        ''' Создание области для размещения карточек партнеров '''
-        scroll = QScrollArea(self)
+        '''
+        Создание области прокрутки
+        :return: scroll - Область прокрутки
+        '''
+        scroll = QScrollArea()
 
         # Установка имени объекта для назначения стилей
         scroll.setObjectName("PartnerCardScrollArea")
@@ -212,18 +222,14 @@ class MainWindow(QFrame):
         scroll.setWidgetResizable(True)
         return scroll
 
-
-    # Click Listener Для кнопки перехода в окно Добавления партнера (PartnerAddFrame)
     def open_partner_information_frame(self):
-        ''' Отправка запроса на открытие окна информации о партнера '''
+        '''
+        Переключение между окнами с сохранением имени партнера
+        :return: Ничего
+        '''
         # sender - Кнопка, с которой пришел запрос
         sender = self.sender()
         Partner.set_name(sender.objectName())
 
         # В ObjectName() кнопки будет записано имя партнера - Так будет проще работать с его информацией
         self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, sender.objectName())
-
-    def open_partner_add_frame(self):
-        """ Открыть окно с добавлением нового партнера """
-        self.controller.show_arg_frame(Partner_frame.PartnerAddFrame)
-

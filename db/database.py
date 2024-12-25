@@ -20,7 +20,10 @@ class Database:
 
     # Подключение к Базе данных
     def connect_db(self):
-        ''' Установка соединения с БД в Postgresql '''
+        '''
+        Установка соединения с базой данных config.db_name на сервере
+        :return: Строка подключения
+        '''
 
         try:
             connection = psycopg2.connect(

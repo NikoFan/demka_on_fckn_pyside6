@@ -1,7 +1,6 @@
 # Импорт библиотек
 import sys
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtCore import Slot, QSize
 from PySide6.QtWidgets import (
     QStackedWidget,
     QApplication,
@@ -58,7 +57,7 @@ class Application(QWidget):
         Это позволяет работать с Стартовым классом Application
         не создавая его объект его каждый раз заново
         '''
-        self.main_window = MainWindow_frame.MainWindow(self, self)
+        self.main_window = MainWindow_frame.MainWindow(self)
 
 
         # Создание контейнера для Фреймов
@@ -101,7 +100,7 @@ class Application(QWidget):
     def show_arg_frame(self, frame, partner_name: str = Partner.get_name()):
         """ Открытие фрейма по нажатию кнопки + установка имени обрабатываемого партнера """
 
-        current_frame = frame(self, self)
+        current_frame = frame(self)
         # Удаление старого окна из контейнера фреймов
         '''
         В данной функции обрабатываются только те фреймы, где требуется Самая новая информация

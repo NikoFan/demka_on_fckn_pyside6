@@ -1,72 +1,58 @@
 # Импорт библиотек
-from PySide6.QtCore import Qt, Slot, QSize, QRect
 from PySide6.QtWidgets import (
     QFrame,
-    QWidget,
     QPushButton,
     QVBoxLayout,
     QTreeWidget,
     QTreeWidgetItem)
 
-
 from Partner import Partner
 from FRAMES import Partner_information_frame
-from app import Application
+
 
 class HistoryFrame(QFrame):
-    ''' Класс Истории продаж партнера '''
 
-    def __init__(self, parent, controller):
-
-        QFrame.__init__(self, parent)
+    def __init__(self, controller):
+        '''
+        Конструктор класса истории продаж партнера
+        :param controller: экземпляр класса Application()
+        '''
+        QFrame.__init__(self)
         self.controller = controller
         self.db = controller.db
         self.update_start_values()
 
     def update_start_values(self):
-        ''' Обновление стартовых данных о партнере '''
+        '''
+        Загрузка элементов на фрейм
+        :return: Ничего
+        '''
 
-        '''
-        Была решена проблема с немасштабируемой таблицей
-        для этого достаточно убрать QWidget(self) из скобок в QVBoxLayout()
-        и убрать все слова self из скобок
-        '''
         self.widgets_container = QVBoxLayout(self)
-        self.tables = QTreeWidget()
+        tables = QTreeWidget()
 
         # self.tables.setColumnCount(3)
-        self.tables.setHeaderLabels(["Продукт", "Партнер", "Количество", "Дата"])
+        tables.setHeaderLabels(["Продукт", "Партнер", "Количество", "Дата"])
 
-        self.partner_name = None
         for sales_data in self.db.get_sales_data(Partner.get_name()):
-            self.partner_name = sales_data["partner_name"]
+            partner_name = sales_data["partner_name"]
             # Установка строк в колонки
-            self.table_data = QTreeWidgetItem(self.tables)
-            self.table_data.setText(0, sales_data["product_name"])
-            self.table_data.setText(1, sales_data["partner_name"])
-            self.table_data.setText(2, str(sales_data["quantity"]))
-            self.table_data.setText(3, str(sales_data["sale_date"]))
+            table_data = QTreeWidgetItem(tables)
+            table_data.setText(0, sales_data["product_name"])
+            table_data.setText(1, sales_data["partner_name"])
+            table_data.setText(2, sales_data["quantity"])
+            table_data.setText(3, sales_data["sale_date"])
 
-        self.restore_table_button = QPushButton("Перезагрузить таблицу")
-        self.restore_table_button.clicked.connect(
-            self.restore_frame
+        restore_table_button = QPushButton("Перезагрузить таблицу")
+        restore_table_button.clicked.connect(
+            lambda: self.controller.show_arg_frame(HistoryFrame)
         )
 
-        self.back = QPushButton("Назад")
-        self.back.clicked.connect(
-            self.open_partner_info_frame
+        back = QPushButton("Назад")
+        back.clicked.connect(
+            lambda: self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame)
         )
 
-        self.widgets_container.addWidget(self.tables)
-        self.widgets_container.addWidget(self.restore_table_button)
-        self.widgets_container.addWidget(self.back)
-
-
-
-    def restore_frame(self):
-        self.controller.show_arg_frame(HistoryFrame, self.partner_name)
-
-    def open_partner_info_frame(self):
-        self.controller.show_arg_frame(Partner_information_frame.PartnerInformationFrame, self.partner_name)
-
-
+        self.widgets_container.addWidget(tables)
+        self.widgets_container.addWidget(restore_table_button)
+        self.widgets_container.addWidget(back)

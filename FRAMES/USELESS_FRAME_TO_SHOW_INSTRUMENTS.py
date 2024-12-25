@@ -4,8 +4,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLabel,
     QComboBox,
-    QVBoxLayout,
-    QWidget)
+    QVBoxLayout)
 
 from FRAMES import MainWindow_frame
 
@@ -15,8 +14,8 @@ from FRAMES import MainWindow_frame
 НО они могут быть на самом экзамене """
 
 class UselessFrame(QFrame):
-    def __init__(self, parent, controller):
-        QFrame.__init__(self, parent)
+    def __init__(self, controller):
+        QFrame.__init__(self)
         self.controller = controller
         self.widgets_container = QVBoxLayout(self)
 
